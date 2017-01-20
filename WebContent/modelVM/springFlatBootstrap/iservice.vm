@@ -1,0 +1,5 @@
+package ${packagePath}.${lowerCaseObjName}.service; 
+import cn.samehope.frame.service.IBaseService;
+public interface I${ObjName}Service  extends IBaseService{
+
+}

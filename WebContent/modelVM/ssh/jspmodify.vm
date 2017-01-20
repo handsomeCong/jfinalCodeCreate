@@ -1,0 +1,91 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="/WEB-INF/pages/c.tld"%>
+<%@ taglib prefix="fmt" uri="/WEB-INF/pages/fmt.tld"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>${ObjCN}</title>
+<link href="/assets/css/dpl-min.css" rel="stylesheet">
+<link href="/assets/css/bui-min.css" rel="stylesheet">
+<link href="/assets/css/globle.css" rel="stylesheet">
+<link href="/assets/css/style.css" rel="stylesheet">
+<link href="/assets/css/edit.css" rel="stylesheet">
+</head>
+<body>
+
+	<ul class="breadcrumb">
+		<li><a href="#">首页</a> <span class="divider">/</span></li>
+		<li><a href="${ ctx}/${lowerCaseObjName}/query.htm">${ObjCN}</a> <span class="divider">/</span></li>
+		<li class="active">编辑</li>
+	</ul>
+	<h2>${ObjCN}</h2>
+	<hr>
+	<form action="${ ctx}/${lowerCaseObjName}/save.htm" class="form-horizontal" method="post" id="${element.FIRSTLOW_ENGLISH_NAME}Form">
+		#foreach (${element} in ${configBasicExtendInfoList})
+    		#if(${element.FIRSTLOW_ENGLISH_NAME}=='id'||${element.FIRSTLOW_ENGLISH_NAME}=='ID')
+    			<input type="hidden"  name="id" value="${form.id}" id="id"   />
+    		#elseif(${element.FIRSTLOW_ENGLISH_NAME}!='id')
+    			#if(${element.IS_CREATE_DISPLAY}=='true')
+                <div class="control-group">
+                  <label for="${element.FIRSTLOW_ENGLISH_NAME}" class="control-label">
+					#if(${element.IS_NEED}=='true')
+						<s>*</s>
+					#end
+					${element.FIELD_DESCRIBE}
+					：</label>
+                  <div class="controls">
+    				#if(${element.CONTROL_TYPE}=='date')
+                    <input type="text" class="input-medium datepick" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" value="${ model.${element.FIELD_ENGLISH_NAME}}"  
+					#if(${element.IS_NEED}=='true')
+						data-rules="{required : true}"
+					#end
+					/>
+    				#elseif(${element.CONTROL_TYPE}=='select')
+    					<select id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"  
+						#if(${element.IS_NEED}=='true')
+						data-rules="{required : true}"
+						#end
+						 ><option value="true">是</option><option value="false">否</option></select>
+    				#elseif(${element.CONTROL_TYPE}=='checkbox')
+    					<input type="checkbox" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" 
+							#if(${element.IS_NEED}=='true')
+						data-rules="{required : true}"
+						#end
+						/>
+    				#elseif(${element.CONTROL_TYPE}=='radio')
+    					<input type="radio" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+    				#else
+    				   <input type="text"  class="input-large" id="${element.FIRSTLOW_ENGLISH_NAME}" name="${element.FIRSTLOW_ENGLISH_NAME}" value="${ form.${element.FIRSTLOW_ENGLISH_NAME}}" 
+						#if(${element.IS_NEED}=='true')
+						data-rules="{required : true}"
+						#end
+						/>
+    				#end
+    				 
+    			  </div>
+                </div>
+    			#end
+    		   #end 
+              #end
+
+		<div class="row actions-bar">
+			<div class="form-actions span13 offset3">
+				<button type="submit" class="button button-primary">保存</button>
+				<a   class="button"  href="${ ctx}/${lowerCaseObjName}/query.htm">返回</a>
+			</div>
+		</div>
+	</form>
+<script src="/js/jquery-1.8.1.min.js" type="text/javascript"></script>
+<script src="/assets/js/bui-min.js"></script>
+
+<script type="text/javascript">
+	BUI.use('bui/form', function(Form) {
+		new Form.Form({
+			srcNode : '#${element.FIRSTLOW_ENGLISH_NAME}Form'
+		}).render();
+	});
+</script>
+</body>
+</html>

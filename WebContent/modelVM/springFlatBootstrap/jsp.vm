@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<jsp:include page="/admin/include/head.jsp"></jsp:include>
+<jsp:include page="/admin/include/left.jsp"></jsp:include>
+<script src="${ contextpath }/admin/js/common.js"></script>
+<div id="main">
+			<div class="container-fluid">
+			 <div class="page-header">
+				<div class="pull-left">
+					<h4><i class="icon-table"></i>${ObjCN}</h4>
+				</div>
+			 </div>
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="box box-color box-bordered">
+						<h6>
+							<div class="box">
+								<button class="btn btn-small btn-waring" id="table_add"><i class="icon-plus"></i>&nbsp;&nbsp; 新 增</button>
+ 								<button class="btn btn-small btn-waring" id="table_delete"><i class="icon-trash"></i>&nbsp;&nbsp; 删 除</button>
+								<button class="btn btn-small btn-waring" id="table_refresh"><i class="icon-refresh"></i>&nbsp;&nbsp; 刷 新</button>
+						 			 
+									<div class="pull-right">
+											##查询表单		 
+									#set($count=0)	
+									#set($queryString="")
+									
+									#foreach (${element} in ${configBasicExtendInfoList})
+										 #if(${element.IS_SEARCH}=='true')
+											 #if($count==0)
+												#set($queryString=${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}")
+											 #else
+												#set($queryString=($queryString+"&"+${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}"))
+											 #end
+											 #set($count=$count+1)
+										 #end
+									 #end	
+									
+									#if($count!=0)
+										<form method="post" action="${contextpath}/${lowerCaseObjName}/list" class="form-horizontal">
+									#end
+									#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_SEARCH}=='true')
+													${element.FIELD_DESCRIBE}：<input type="text" name="${element.FIELD_ENGLISH_NAME}"  id="${element.FIELD_ENGLISH_NAME}" class="input-small" placeholder="请输入${element.FIELD_DESCRIBE}" value="${${element.FIELD_ENGLISH_NAME}}">
+ 												#end
+									#end		
+										
+									#if($count!=0)
+										<button class="btn  btn-small" type="submit"><i class="icon-search"></i>查  询</button>
+									</form>
+									#end
+									</div>
+								</h6>
+								
+							</div>
+							 
+							<div class="box-content nopadding">
+								<table class="table table-hover table-nomargin table-bordered">
+									<thead>
+										<tr>
+											<th><input type="checkbox" width="15px"  id="checkAll"/></th>
+											<th>操作</th>
+											#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_TALBE_DISPLAY}=='true')
+												   <th>${element.FIELD_DESCRIBE}</th>
+												#end
+											#end
+ 										</tr>
+									</thead>
+									<tbody>
+										<c:forEach items="${pageList.list}" var="item">
+										 	
+									       <tr>
+    											<td><input type="checkbox" name="subBox" value="${item.id}" /></td>
+    											  <td style="text-align:left;width:110px">
+												 	<i class="icon-edit modifyIcon"  value="${item.id}">修改</i>
+												 	&nbsp;&nbsp;
+												 	<i class="icon-trash deleteIcon" value="${item.id}">删除</i>
+												 </td>
+    											#foreach (${element} in ${configBasicExtendInfoList})
+    											 #if(${element.IS_TALBE_DISPLAY}=='true')
+    											<td>
+    												#if(${element.CONTROL_TYPE}=='date')
+    													<fmt:formatDate value="${ item.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+    													${ item.${element.FIELD_ENGLISH_NAME}}
+    												#else
+    													${ item.${element.FIRSTLOW_ENGLISH_NAME}}
+    												#end
+    											</td>	
+				
+    											 #end
+												#end
+ 										   </tr>
+										</c:forEach>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			<page:page href="${contextpath}/${lowerCaseObjName}/list?${queryString}" data="pageList" />
+		</div>
+ 
+<script language="javascript">
+$(document).ready(function(){
+	table_init("${contextpath}/${lowerCaseObjName}","${contextpath}/${lowerCaseObjName}/list?${queryString}");
+});
+</script>
+ 

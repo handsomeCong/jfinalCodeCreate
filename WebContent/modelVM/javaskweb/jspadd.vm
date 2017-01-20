@@ -1,0 +1,56 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<jsp:include page="/admin/include.jsp" />
+<body style="background: #f0f0f0;">
+	<div id="body-wrapper">
+		<div id="main-content">
+			<noscript></noscript>
+			<h2>${ObjCN}管理</h2>
+			<div class="content-box">
+				<div class="content-box-header">
+					<h3>
+						<a href="${contextpath}/${lowerCaseObjName}" class="nav">&nbsp;&nbsp;${ObjCN}</a>&gt;&gt;&nbsp;&nbsp;新增
+					</h3>
+				</div>
+				<div class="content-box-content">
+					<form action="${contextpath}/${lowerCaseObjName}/saveAdd" method="POST"  >
+									  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tableForm">
+									#foreach (${element} in ${configBasicExtendInfoList})
+										#if(${element.IS_CREATE_DISPLAY}=='true')
+                                        <tr>
+                                          <td width="18%">${element.FIELD_DESCRIBE}：</td>
+										  <td>
+											#if(${element.CONTROL_TYPE}=='date')
+                                            <input type="date" class="input-medium" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}" data-rule-required="true"/>
+											#elseif(${element.CONTROL_TYPE}=='select')
+												<select id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"   class='select2-me input-xlarge'><option value="true">是</option><option value="false">否</option></select>
+											#elseif(${element.CONTROL_TYPE}=='checkbox')
+												<input type="checkbox" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#elseif(${element.CONTROL_TYPE}=='radio')
+												<input type="radio" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#else
+												<input type="text" style="width:30%" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}"  />
+  											#end
+										</td>	
+										</tr>
+										#end
+									#end
+									  </table>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tableFormFooter">
+                                        <tr>
+											<td height="40" align="center">
+								<button type="submit" class="button blue larrow"
+									style="cursor: hand;">确定</button>&nbsp;&nbsp;
+								<button type="button" name="ret_btn" class="button blue larrow"
+									onclick="window.location.href='${contextpath}/${lowerCaseObjName}'">返回</button>
+											</td>
+                                        </tr>
+                                      </table>
+									</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>

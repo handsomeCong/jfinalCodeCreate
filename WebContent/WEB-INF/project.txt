@@ -1,0 +1,7 @@
+jdbcUrl = jdbc:mysql://localhost:3306/jfinalcodecreate?characterEncoding=GBK&zeroDateTimeBehavior=convertToNull
+user =root
+password =csc
+devMode = true
+driverClass =com.mysql.jdbc.Driver
+vmpath=D:/jfinal/
+outfilepatProjectDemoh=D:/jfinal/

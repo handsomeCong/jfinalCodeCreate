@@ -1,0 +1,90 @@
+package ${packagePath}.entity.${lowerCaseObjName};
+import java.util.Date;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.math.BigDecimal;
+
+/**
+ * 
+ *  ${ObjCN}  实体类<br> 
+ * 〈功能详细描述〉
+ *
+ * @author 
+ * @see [相关类/方法]（可选）
+ * @since [产品/模块版本] （可选）
+ */
+@Entity(name = "${tableName}")
+public class ${ObjName}Entity implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+
+    #foreach (${element} in ${configBasicExtendInfoList})
+    	/* ${element.FIELD_DESCRIBE} */
+    	private ${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME};
+    #end
+     #foreach (${element} in ${configBasicExtendInfoList})
+    	
+    	#if(${element.FIELD_ENGLISH_NAME}=='ID'||${element.FIELD_ENGLISH_NAME}=='id')
+    			 /**
+			     * 
+			     * 功能描述: 获取 主键<br>
+			     * 〈功能详细描述〉
+			     *
+			     * @return：${element.OBJECT_ATTRIBUTE_TYPE},主键
+			     * @see [相关类/方法](可选)
+			     * @since [产品/模块版本](可选)
+			     */
+		       @Id
+			   @GeneratedValue(strategy = GenerationType.AUTO)
+			   @Column(name = "ID")
+			   public Integer getId(){
+			        return id;
+			   }
+			    /**
+			     * 
+			     * 功能描述: 设置 主键<br>
+			     * 〈功能详细描述〉
+			     *
+			     * @param id,主键
+			     * @see [相关类/方法](可选)
+			     * @since [产品/模块版本](可选)
+			     */
+			    public void setId(Integer id){
+			        this.id = id;
+			    }
+		      
+		      
+		#else
+			  /**
+			     * 
+			     * 功能描述: 获取  ${element.FIELD_DESCRIBE}<br>
+			     * 〈功能详细描述〉
+			     *
+			     * @return：${element.OBJECT_ATTRIBUTE_TYPE},${element.FIELD_DESCRIBE}
+			     * @see [相关类/方法](可选)
+			     * @since [产品/模块版本](可选)
+			     */
+	         @Column(name = "${element.FIELD_ENGLISH_NAME}")
+				public ${element.OBJECT_ATTRIBUTE_TYPE} get${element.FIRSTUP_ENGLISH_NAME}() {
+					return ${element.FIRSTLOW_ENGLISH_NAME};
+				}
+			/**
+			     * 
+			     * 功能描述: 设置  ${element.FIELD_DESCRIBE}<br>
+			     * 〈功能详细描述〉
+			     *
+			     * @return：${element.OBJECT_ATTRIBUTE_TYPE},${element.FIELD_DESCRIBE}
+			     * @see [相关类/方法](可选)
+			     * @since [产品/模块版本](可选)
+			     */
+				public void set${element.FIRSTUP_ENGLISH_NAME}(${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME}) {
+					this.${element.FIRSTLOW_ENGLISH_NAME} = ${element.FIRSTLOW_ENGLISH_NAME};
+				}
+		#end
+  		
+    #end
+}

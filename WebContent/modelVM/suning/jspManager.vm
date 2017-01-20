@@ -1,0 +1,424 @@
+<!-- 
+   @${ObjCN}
+   @file: ${lowerCaseObjName}Manager.ftl
+   @page: ${lowerCaseObjName}Manager.ftl
+   @author: 15060195
+   @内容说明：${ObjCN}页面
+ -->
+<#import "/common/spring.ftl" as spring>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="shortcut icon" href="" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>${ObjCN}配置</title>
+    <link rel="stylesheet" href="${resRoot}/css/main.css" type="text/css" />
+    <script type="text/javascript" src="${resRoot}/js/ibms/pager.js"></script>
+<script type="text/javascript">
+ 	resizeHeight();
+    $(document).ready(function () {
+        //左侧高度拉伸至屏幕最下方
+        var h = $(window).height()-$(".header").height();
+        if(h > $(".container-l").height()){
+            $(".container-l").css("min-height",h);
+        }
+        //初始化列表编辑效果
+        initEdit();
+        //查询条件展示/收缩
+        hb.show_hide();
+    })
+    
+    //初始化列表编辑效果
+    function initEdit(){
+        //双击列表，变换文本框  
+        $(".has-of-body tr").not(":first").each(function(){
+            $(this).find("td:gt(1)").dblclick(function(e){
+                //判断td的内容是数据还是文本框，若是文本框，则不做处理  add by gaolei
+                if($(this).children().is("input")){
+                    return;
+                }
+                e.preventDefault();
+                var val = $(this).text();
+                var wid = $(this).width()-20;
+                var html = "";
+                html = "<input class='normal-input focus-input' value='"+val+ "'/>";
+                $(this).empty() ;
+                $(this).html(html) ;
+                $(".focus-input").parent().width(wid+20) ;
+                $(".focus-input").width(wid).focus();
+                $(".normal-select").parent().width(wid+20) ;
+                $(".normal-select").width(wid).focus();
+                $(this).parent().find("input:checkbox").prop("checked",true);
+            });
+        });
+        
+        $("form").on("blur",".focus-input",function(){
+            $(this).parent().width("auto").html($(this).val());
+        });
+        
+        $(".has-of-body tr").on("blur",".normal-select",function(){
+            var _val = $.trim($(this).val());
+            $(this).parent().width("auto").text(_val);
+             
+        });
+    }
+    
+    
+    function add(){
+        var objTr = $("#hideTr").find("tr").eq(1).clone();
+        $("#${firstLowObjName}Tr").after(objTr);
+        editCss();
+    }
+    
+    //新增行文本框编辑样式
+    function editCss(){
+        
+        $(".has-of-body tr").eq(1).find("td").not(":first").dblclick(function(e){
+            //判断td的内容是数据还是文本框，若是文本框，则不做处理 
+            if($(this).children().is("input")){
+                return;
+            }
+            
+            e.preventDefault();
+            var val = $(this).text();
+            var wid = $(this).width()-20;
+            var html = "";
+            html = "<input class='normal-input focus-input' value='"+val+ "'/>";
+            $(this).html(html) ;
+            $(".focus-input").parent().width(wid+20) ;
+            $(".focus-input").width(wid).focus();
+            $(".normal-select").parent().width(wid+20) ;
+            $(".normal-select").width(wid).focus();
+            //选中编辑行的复选框   add by gaolei
+            $(this).parent().find("input:checkbox").prop("checked",true);
+        });
+        
+        $(".has-of-body tr").on("blur",".focus-input",function(){
+            var _val = $.trim($(this).val());
+            //如果是公司编码，则校验编码是否已存在
+            if("code" == $(this).parent().attr("name")){
+                var flag = isExists(_val);
+                if("" == flag){
+                    alert('登录状态过期，请刷新页面，重新登录！');
+                    $(this).parent().width("auto").text("");
+                    return;
+                }else if("0" == flag){
+                    alert("该编码："+_val+"已存在，不可新增！");
+                    $(this).parent().width("auto").text("");
+                }else{
+                    $(this).parent().width("auto").text(_val);
+                }
+            }else{
+                $(this).parent().width("auto").text(_val);
+            }
+             
+        });
+        
+        $(".has-of-body tr").on("blur",".normal-select",function(){
+            var _val = $.trim($(this).val());
+            $(this).parent().width("auto").text(_val);
+             
+        });
+        
+        $(".has-of-body tr").hover(function(){
+            $(this).addClass("bg-gray");
+        },function(){
+            $(this).removeClass("bg-gray");
+        });
+        
+    }
+    
+    //校验编码是否已存在
+    function isExists(obj){
+        if("" == obj){
+            return;
+        }
+        var flag = "";
+        $.ajax({
+            url:"${base}/${lowerCaseObjName}/get${ObjName}ByCode.htm",
+            data:{
+                "code":obj
+            },
+            type:"post",
+            dataType:"json",
+            async:false,
+            success:function(data){
+                if(data.status == "E0"){
+                    flag = "0";
+                }else if(data.status == "E1"){
+                    flag = "1";
+                }else{
+                    flag = "";
+                }
+            }, 
+            error:function(data) {
+                alert('校验编码是否存在出错！');
+            }
+        });
+        
+        return flag;
+    }
+    
+    function save(){
+        probeAuthStatus(function (principal) { 
+                var parameterStr = saveData();
+                if("" == parameterStr){
+                    return;
+                }
+                $.ajax({
+                    url:"${base}/${lowerCaseObjName}/save${ObjName}.htm",
+                    data:{
+                        "parameterStr":parameterStr
+                    },
+                    type:"post",
+                    dataType:"json",
+                    async:false,
+                    success:function(data){
+                        alert("保存成功！");
+                        var pageNum = $("#pageNum").val();
+                        var pageSize = $("#pageSize").val();
+                         var map = {"pageNum":pageNum, "pageSize":pageSize};
+                        $("#${lowerCaseObjName}List").load("${base}/${lowerCaseObjName}/getAjax${ObjName}List.htm", map);
+                    }, 
+                    error:function(data) {
+                        alert('保存${objCN}出错！');
+                    }
+                });
+            }, 
+            function () { 
+                alert('登录状态过期，请刷新页面，重新登录！');
+            }
+        );
+    }
+    
+    function saveData(){
+        //选中数据条数
+        var count = 0;
+        //选中数据，字段为空
+        var countNull = 0;
+        //选中数据，字段过长
+        var countLen = 0;
+        var parameterStr = "";
+        $(".has-of-body tr").not(":first").each(function(i,obj){
+            var objChecked = $(obj).find("input:checkbox").prop("checked");
+            if(objChecked){
+                count++;
+                if(countNull > 0 || countLen > 0){
+                    return;
+                }
+                var checkedData = "";
+                $(obj).find("td").not(":first").each(function(){
+                    if(countNull > 0 || countLen > 0){
+                        return;
+                    }
+                    var _val = $.trim($(this).text());
+                    #foreach (${element} in ${configBasicExtendInfoList})
+                    	#if(${element.IS_NEED}=='true')
+                    		 if("${element.FIRSTLOW_ENGLISH_NAME}" == $(this).attr("name")){
+		                        if("" == _val){
+		                            alert("${element.FIELD_DESCRIBE}不可为空！");
+		                            countNull++;
+		                            return;
+		                        }
+		                    }
+ 			    	 	#end
+ 			    	#end
+                    
+                    if(checkedData == ""){
+                        checkedData = checkedData + _val;
+                    }else{
+                        checkedData = checkedData + "," + _val;
+                    }
+                }) ;
+                
+                if(parameterStr == ""){
+                    parameterStr = parameterStr + checkedData;
+                }else{
+                    parameterStr = parameterStr + "/" + checkedData;
+                }
+            }
+        });
+        
+        if(count == 0){
+            alert("请选择要保存的数据！");
+        }
+        
+        if(countNull > 0 || countLen > 0){
+            parameterStr = "";
+        }
+        
+        return parameterStr;
+        
+    }
+    
+    //删除
+    function del(){
+        probeAuthStatus(function (principal) { 
+                var code = delData();
+                if("" == code){
+                    return;
+                }
+        
+                if(!confirm("你确定要删除已选中的记录？编码为：" + code)){
+                    return;
+                }
+                
+                $.ajax({
+                    url:"${base}/${lowerCaseObjName}/del${ObjName}ByCode.htm",
+                    data:{
+                        "code":code
+                    },
+                    type:"post",
+                    dataType:"json",
+                    async:false,
+                    success:function(data){
+                        alert("删除成功！");
+                        var pageNum = $("#pageNum").val();
+                        var pageSize = $("#pageSize").val();
+                        var map = {"pageNum":pageNum, "pageSize":pageSize};
+                        $("#${lowerCaseObjName}List").empty();
+                        $("#${lowerCaseObjName}List").load("${base}/${lowerCaseObjName}/getAjax${ObjName}List.htm", map);
+                    }, 
+                    error:function(data) {
+                        alert('删除${objCN}出错！');
+                    }
+                });
+            }, 
+            function () { 
+                alert('登录状态过期，请刷新页面，重新登录！');
+            }
+        );
+    }
+    
+    //获取需要删除的数据
+    function delData(){
+        var count = 0;
+        var code = "";
+        $(".has-of-body tr").not(":first").each(function(i,obj){
+            var objChecked = $(obj).find("input:checkbox").prop("checked");
+            if(objChecked){
+                if(code == ""){
+                    code = "'" + $.trim( $(this).find("td").eq(1).text() ) + "'";
+                }else{
+                    code = code + "," + "'" + $.trim( $(this).find("td").eq(1).text() ) + "'";
+                }
+                count++;
+            }
+        });
+        
+        if(count == 0){
+            alert("请选择要删除的数据！");
+        }
+        return code;
+    }
+    
+    //根据条件，点击查询按钮查询
+    function getList(){
+        probeAuthStatus(function (principal) { 
+                var pageNum = $("#pageNum").val();
+                var pageSize = $("#pageSize").val();
+                
+                var map = {
+                    "pageNum":pageNum, 
+                    "pageSize":pageSize
+                };
+                
+                $("#${lowerCaseObjName}List").empty();
+                $("#${lowerCaseObjName}List").load("${base}/${lowerCaseObjName}/getAjax${ObjName}List.htm", map);
+            }, 
+            function () { 
+                alert('登录状态过期，请刷新页面，重新登录！');
+            }
+        );
+    }
+    
+    //页面跳转
+    function doSearch(obj){
+        probeAuthStatus(function (principal) { 
+                var pageNum = 1;
+                if(obj == "0"){
+                    //跳转到填写的页
+                    pageNum = $("#pageNum").val();
+                }else if(obj == "-1"){
+                    //改变每页展示条数，查询数据，默认展示第一页
+                }else{
+                    //上一页、下一页、首页、尾页
+                    pageNum = obj;
+                }
+                var pageSize = $("#pageSize").val();
+                 var map = {"pageNum":pageNum, "pageSize":pageSize};
+                $("#${lowerCaseObjName}List").empty();
+                $("#${lowerCaseObjName}List").load("${base}/${lowerCaseObjName}/getAjax${ObjName}List.htm", map);
+            }, 
+            function () { 
+                alert('登录状态过期，请刷新页面，重新登录！');
+            }
+        );
+    }
+    
+</script>
+</head>
+<body>
+<div class="crumbs">
+    <a href="javascript:">首页</a><em>&gt;</em>${ObjCN} <em>&gt;</em>
+</div>
+<form action="" method="post" name="idFrmMain" id="idFrmMain">
+<div class="scroll-container">
+<div class="right-content-wrap">
+     
+    <div class="bottom-operation-table">
+        <div class="" id="${lowerCaseObjName}List">
+            <div class="table-operation-btn clearfix">
+                <div class="left-btn fl">
+                    <a href="javascript:void(0);" onClick="add();" class="normal-btn">新增</a>
+                    <a href="javascript:void(0);" onClick="del();" class="normal-btn">删除</a>
+                    <a href="javascript:void(0);" onClick="save();" class="normal-btn">保存</a>
+                    <a href="javascript:void(0);" onClick="getList();" class="red-btn fl">查询</a>
+                </div>
+            </div>
+            <div class="has-of-wrap">
+                <div  class="has-of-body">
+                    <table >
+                        <tr id="${firstLowObjName}Tr">
+                            <th width="5%"><label><input type="checkbox"/>全选</label></th>
+                            #foreach (${element} in ${configBasicExtendInfoList})
+								#if(${element.IS_TALBE_DISPLAY}=='true')
+									<th>${element.FIELD_DESCRIBE}</th>
+								#end
+							 #end
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            #set ($q='#include')
+            <$q "/common/pager.ftl">
+        </div>
+    </div>
+</div>
+</div>
+</form>
+<div style="display:none;" >
+<table id="hideTr">
+    <tr>
+        <th width="5%"><label><input type="checkbox"/>全选</label></th>
+         #foreach (${element} in ${configBasicExtendInfoList})
+			#if(${element.IS_TALBE_DISPLAY}=='true')
+				<th>${element.FIELD_DESCRIBE}</th>
+			#end
+		 #end
+    </tr>
+    <tr>
+        <td><label><input type="checkbox"/>0</label></td>
+		#foreach (${element} in ${configBasicExtendInfoList})
+		 #if(${element.IS_TALBE_DISPLAY}=='true')
+		 	<td name="${element.FIRSTLOW_ENGLISH_NAME}"> </td>	
+		 #end
+		#end
+							 
+    </tr>
+</table>
+</div>
+</body>
+</html>

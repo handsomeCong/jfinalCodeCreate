@@ -1,0 +1,21 @@
+#hibernate-mapping.xml
+<value>com/v8/model/${ObjName}.hbm.xml</value>
+#hibernate-dao.xml
+<bean id="${firstLowObjName}Dao" class="com.v8.model.dao.impl.${ObjName}DaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+</bean>
+
+#manage-release.xml
+<prop key="${lowerCaseObjName}/*.htm">manage${ObjName}</prop>
+<bean id="manage${ObjName}" class="com.v8.base.controller.BaseMultiAction">
+		<property name="methodNameResolver" ref="pathMultiResolver" />
+		<property name="delegate" ref="manage${ObjName}Delegate" />
+</bean>
+
+<bean id="manage${ObjName}Delegate" class="com.v8.web.${lowerCaseObjName}.controller.${ObjName}ListController">
+	    <property name="${firstLowObjName}Service" ref="${firstLowObjName}Service"/>
+</bean>
+
+<bean id="${firstLowObjName}Service" class="com.v8.web.${lowerCaseObjName}.service.impl.${ObjName}ServiceImpl">
+		<property name="${firstLowObjName}Dao" ref="${firstLowObjName}Dao"/>
+</bean>

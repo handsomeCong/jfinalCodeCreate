@@ -1,0 +1,160 @@
+package ${packagePath}.web.controller.${lowerCaseObjName};
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.suning.ibms.constants.IbmsConstants;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ${packagePath}.entity.${lowerCaseObjName}.${ObjName}Entity;
+import ${packagePath}.intf.${lowerCaseObjName}.${ObjName}Service;
+import com.suning.monitor.trace.api.util.JsonUtil;
+
+import ${packagePath}.util.CollectionUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+/**
+ * ${ObjCN} 
+ * @author 15060195
+ *
+ */
+
+@Controller
+@RequestMapping(value="/${lowerCaseObjName}")
+public class ${ObjName}Controller {
+	
+	@Resource
+	${ObjName}Service ${firstLowObjName}Service;
+	
+	@RequestMapping("/get${ObjName}List")
+	public String  get${ObjName}List(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 String result = "/${lowerCaseObjName}/${lowerCaseObjName}Manager.ftl";
+		  try {
+            request.setAttribute("${lowerCaseObjName}List", null);
+            request.setAttribute("totalRows", IbmsConstants.Int.ZERO);
+            request.setAttribute("pageCount", IbmsConstants.Int.ONE);
+            request.setAttribute("pageNum", IbmsConstants.Int.ONE);
+            request.setAttribute("pageSize", IbmsConstants.Int.TEN);
+        } catch (Exception e) {
+            result = "error.ftl";
+        }
+		 return result;
+	}
+
+	@RequestMapping("/getAjax${ObjName}List")
+	public String  getAjax${ObjName}List(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 String result = "/${lowerCaseObjName}/${lowerCaseObjName}List.ftl";
+		   try {
+            Map<String, Object> map = new HashMap<String, Object>();
+            // 获取要展示的页数
+            String pageNumStr = request.getParameter("pageNum");
+            int pageNum = Integer.valueOf(pageNumStr);
+            // 获取每页展示的条数
+            String pageSize = request.getParameter("pageSize");
+
+            int pageCount = 0;
+            int totalRows = 0;
+
+            List<Map<String, Object>> count = ${firstLowObjName}Service.get${ObjName}Count(map);
+            if (CollectionUtil.isNotEmpty(count)) {
+                Object totalRowsObj = count.get(0).get("totalRows");
+                if (null != totalRowsObj) {
+                    totalRows = Integer.valueOf(totalRowsObj.toString());
+                }
+            }
+
+            List<${ObjName}Entity> ${firstLowObjName}List = null;
+
+            if (totalRows != 0) {
+                // 有符合条件的数据
+                pageCount = (int) Math.ceil(totalRows / Float.valueOf(pageSize));
+
+                if (pageNum > pageCount) {
+                    pageNum = pageCount;
+                }
+                map.put("pageNum", pageNum);
+                map.put("pageSize", pageSize);
+                ${firstLowObjName}List = ${firstLowObjName}Service.getAll${ObjName}Page(map);
+            }
+
+            if (pageCount == 0) {
+                pageCount = 1;
+                pageNum = 1;
+            }
+
+            request.setAttribute("${firstLowObjName}List", ${firstLowObjName}List);
+            request.setAttribute("totalRows", totalRows);
+            request.setAttribute("pageCount", Integer.valueOf(pageCount));
+            request.setAttribute("pageNum", Integer.valueOf(pageNum));
+            request.setAttribute("pageSize", Integer.valueOf(pageSize));
+        } catch (Exception e) {
+            result = "error.ftl";
+        }
+        return result;
+	}
+
+
+	@RequestMapping("/save${ObjName}")
+    public void save${ObjName}(HttpServletRequest request, HttpServletResponse response) {
+
+        // 返回结果
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        try {
+            // 获取电子发票开具信息配置对象列表信息
+            List<${ObjName}Entity> ${firstLowObjName}List = new ArrayList<${ObjName}Entity>();
+
+            // 获取需要保存的数据参数
+            String parameterStr = request.getParameter("parameterStr");
+            String[] arr00 = parameterStr.split("/");
+            for (int i = 0; i < arr00.length; i++) {
+                String[] arr01 = arr00[i].split(",");
+                ${ObjName}Entity ${firstLowObjName} = new ${ObjName}Entity();
+				#foreach (${element} in ${configBasicExtendInfoList})
+                	${firstLowObjName}.set${element.FIRSTUP_ENGLISH_NAME}(arr01[0]);
+                #end
+              	
+                ${firstLowObjName}List.add(${firstLowObjName});
+            }
+            ${firstLowObjName}Service.save${ObjName}( ${firstLowObjName}List);
+            map.put("status", "E0");
+            response.getWriter().print(JsonUtil.toJson(map));
+
+        } catch (Exception e) {
+        }
+    }
+
+    @RequestMapping("/del${ObjName}ByCode")
+    public void del${ObjName}ByCode(HttpServletRequest request, HttpServletResponse response) {
+        // 返回结果
+        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            // 获取要删除的公司编码拼接字符串
+            String code = request.getParameter("code");
+            ${firstLowObjName}Service.delete${ObjName}ByCode(code);
+            map.put("status", "E0");
+            response.getWriter().print(JsonUtil.toJson(map));
+        } catch (Exception e) {
+        }
+    }
+    
+    @RequestMapping("/get${ObjName}ByCode")
+    public void get${ObjName}ByCode(HttpServletRequest request, HttpServletResponse response){
+        Map<String, Object> result = new HashMap<String, Object>();
+        String code = request.getParameter("code");
+        try{
+            Map<String, Object> eisMap = ${firstLowObjName}Service.get${ObjName}ByCode(code);
+            if(CollectionUtil.isEmpty(eisMap)){
+                result.put("status", "E1");
+            }else{
+                result.put("status", "E0");
+            }
+            
+            response.getWriter().print(JsonUtil.toJson(result));
+        }catch(Exception e){
+        }
+    }
+	 
+}

@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"%>
+<jsp:include page="/admin/include.jsp"></jsp:include>
+<body style="background:#f0f0f0;">
+<div id="body-wrapper">
+ <div id="main-content">
+    <noscript>
+    </noscript>
+    <h2><a href="${contextpath}/${lowerCaseObjName}" class="nav">${ObjCN}</a></h2>
+        <p id="page-intro">在这里您可以看到您的${ObjCN}信息.</p>
+     <div class="content-box">
+	    <div class="content-box-header">
+	        <h3>${ObjCN}
+	         </h3>
+	         <div style="padding-top: 14px;text-align: right;padding-right: 60px;"><a class="button table_add">添加</a>
+						<a class="button table_delete">删除</a>
+						<a class="button table_refresh">刷新</a></div>
+	        
+	    </div>
+	     <div style="padding: 5px">
+ 											##查询表单		 
+									#set($count=0)	
+									#set($queryString="")
+									
+									#foreach (${element} in ${configBasicExtendInfoList})
+										 #if(${element.IS_SEARCH}=='true')
+											 #if($count==0)
+												#set($queryString=${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}")
+											 #else
+												#set($queryString=($queryString+"&"+${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}"))
+											 #end
+											 #set($count=$count+1)
+										 #end
+									 #end	
+									
+									#if($count!=0)
+										<form method="post" action="${contextpath}/${lowerCaseObjName}">
+									#end
+									#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_SEARCH}=='true')
+												  <input type="text" name="${element.FIELD_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}" value="${${element.FIELD_ENGLISH_NAME}}" class='input-medium'>&nbsp;&nbsp;
+												#end
+									#end		
+										
+									#if($count!=0)
+										<button class="button" type="submit">查  询</button>
+										</form>
+									#end
+	 
+ 	    </div>
+	 <div class="content-box-content">
+        <div class="tab-content default-tab" id="tab1">
+	 
+    <table  id="tableList">
+				<thead>
+										<tr>
+											<th><input type="checkbox" width="15px" id="checkAll" name="checkAll" /></th>
+											#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_TALBE_DISPLAY}=='true')
+												   <th>${element.FIELD_DESCRIBE}</th>
+												#end
+											#end
+											<th>操 作</th>
+										</tr>
+									</thead>
+				<tbody>
+					<c:forEach items="${pageList.list}" var="item">
+									       <tr>
+    											<td><input type="checkbox" name="subBox" value="${item.ID}" /></td>
+    											#foreach (${element} in ${configBasicExtendInfoList})
+    											 #if(${element.IS_TALBE_DISPLAY}=='true')
+    											<td>
+    												#if(${element.CONTROL_TYPE}=='date')
+    													<fmt:formatDate value="${ item.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+    													${ item.${element.FIELD_ENGLISH_NAME}}
+    												#else
+    													${ item.${element.FIELD_ENGLISH_NAME}}
+    												#end
+    											</td>	
+    											 #end
+												#end
+										  <td>
+											<a  onclick="window.location.href='${contextpath}/${lowerCaseObjName}/modify/${item.ID}'" style="cursor: pointer;">&nbsp; 修 改</a>
+										  	<a  onclick="window.location.href='${contextpath}/${lowerCaseObjName}/view/${item.ID}'"   style="cursor: pointer;">&nbsp; 查 看</a> 
+										  </td>
+										   </tr>
+										</c:forEach>
+									</tbody>
+			</table>
+			</div>
+			<br/>
+    <page:page href="${contextpath}/${lowerCaseObjName}/${queryString}" data="pageList" />
+ 	    <div id="footer"></div>
+	  </div>
+	 </div>
+ </div>
+ </div>
+</body>
+<script language="javascript">
+$(document).ready(function(){
+	table_init("${contextpath}/${lowerCaseObjName}","${contextpath}/${lowerCaseObjName}/${queryString}");
+});
+</script>
+ 

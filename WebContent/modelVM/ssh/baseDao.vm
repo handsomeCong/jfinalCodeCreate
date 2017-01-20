@@ -1,0 +1,69 @@
+package ${packageNewName}.model.dao.impl.base;
+
+import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+
+import ${packageNewName}.base.dao.impl.BaseDaoImpl;
+import ${packageNewName}.base.vo.BaseVO;
+import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.HibernateException;
+import ${packageNewName}.model.$table.getClassName();
+
+
+/**
+ * 表：$table.getName() 的数据存取类
+ */
+public abstract class Base$table.getClassName()DaoImpl extends BaseDaoImpl {
+
+	public Base$table.getClassName()DaoImpl () {}
+
+	/**
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public $table.getClassName() findByPK(String key){
+		return ($table.getClassName())load($table.getClassName() 
+		.class, key);
+	}
+
+	/**
+	 * 删除
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public void delete(String key){
+		delete(findByPK(key));
+	}
+	
+	/**
+	 * 返回 [$table.getName()] 中的所有记录.
+	 */
+	public List<$table.getClassName()> findAll () {
+		String hql = " from $table.getClassName()";
+		return (List<$table.getClassName()>)select(hql);
+	}
+	
+	/**
+	 * 保存
+	 */
+	public void save(BaseVO vo){
+		$table.getClassName() bean = new $table.getClassName()();
+		try {
+			BeanUtils.copyProperties( bean, vo );
+		} catch (IllegalAccessException e) {
+			throw new HibernateException(e.getMessage());
+		} catch (InvocationTargetException e) {
+			throw new HibernateException(e.getMessage());
+		}
+		save(bean);
+	}
+
+	
+	
+
+
+
+
+}

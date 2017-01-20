@@ -1,0 +1,122 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${ObjCN}</title>
+<link href="${ contextpath }/res/css/style.css" rel="stylesheet"
+	type="text/css" />
+	<link href="${ contextpath }/res/css/page.css" rel="stylesheet"
+	type="text/css" />
+<script type="text/javascript" src="${ contextpath }/res/js/jquery.js"></script>
+<script type="text/javascript" src="${ contextpath }/res/js/common.js"></script>
+<script type="text/javascript" src="${ contextpath }/res/js/layer/layer.js"></script>
+
+</head>
+<body>
+
+<div class="place">
+		<span>位置：</span>
+		<ul class="placeul">
+			<li><a href="#">首页</a></li>
+			<li><a href="#">${ObjCN}</a></li>
+		</ul>
+</div>
+<div class="rightinfo">
+		
+		##查询表单		 
+			#set($count=0)	
+			#set($queryString="")
+			
+			#foreach (${element} in ${configBasicExtendInfoList})
+				 #if(${element.IS_SEARCH}=='true')
+					 #if($count==0)
+						#set($queryString=${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}")
+					 #else
+						#set($queryString=($queryString+"&"+${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}"))
+					 #end
+					 #set($count=$count+1)
+				 #end
+			 #end	
+			
+			#if($count!=0)
+				<form method="post" action="${ contextpath}/${lowerCaseObjName}/list" class="form-horizontal">
+				<ul class="seachform1" style="padding-top: 45px">
+			#end
+			#foreach (${element} in ${configBasicExtendInfoList})
+						#if(${element.IS_SEARCH}=='true')
+							<li><label>${element.FIELD_DESCRIBE}</label><input type="text" name="${element.FIELD_ENGLISH_NAME}"  id="${element.FIELD_ENGLISH_NAME}" class="scinput1" placeholder="请输入${element.FIELD_DESCRIBE}" value="${${element.FIELD_ENGLISH_NAME}}"></li>
+						#end
+			#end		
+			 <div class="tools">
+			<ul class="toolbar">
+			<li class="click" id="table_add"><span><img src="${ contextpath }/res/images/t01.png" /></span>添加</li>
+	        <li id="table_delete" ><span><img src="${ contextpath }/res/images/t03.png" /></span>删除</li>
+	        <li  id="table_refresh"><span><img src="${ contextpath }/res/images/t04.png" /></span>查询</li>
+			</ul>
+		</div>
+				
+			#if($count!=0)
+ 				</ul>
+ 			
+			</form>
+			#end
+ 		<div class="formtitle1">
+			<span>${ObjCN}</span>
+		</div>
+		<table class="tablelist">
+		<thead>
+				<tr>
+				<th><input type="checkbox" width="15px"  id="checkAll"/></th>
+				
+				#foreach (${element} in ${configBasicExtendInfoList})
+					#if(${element.IS_TALBE_DISPLAY}=='true')
+					   <th>${element.FIELD_DESCRIBE}</th>
+					#end
+				#end
+				<th>操作</th>
+			</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${pageList.list}" var="item">
+				 	
+			       <tr>
+						<td><input type="checkbox" name="subBox" value="${item.id}" /></td>
+						#foreach (${element} in ${configBasicExtendInfoList})
+						 #if(${element.IS_TALBE_DISPLAY}=='true')
+						<td>
+							#if(${element.CONTROL_TYPE}=='date')
+								<fmt:formatDate value="${ item.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+								${ item.${element.FIELD_ENGLISH_NAME}}
+							#else
+								${ item.${element.FIRSTLOW_ENGLISH_NAME}}
+							#end
+						</td>	
+
+						 #end
+						#end
+							<td>
+							<a href="${ contextpath }/${lowerCaseObjName}/modify.htm?id=${item.id}" class="tablelink">编辑</a> 
+							<a href="${ contextpath }/${lowerCaseObjName}/view.htm?id=${item.id}"  class="tablelink">查看</a>
+ 				   </tr>
+				</c:forEach>
+			</tbody>
+		</table>
+		<page:page href="${ contextpath}/${lowerCaseObjName}/list?${queryString}" data="pageList" />
+		
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+		$('.tablelist tbody tr:odd').addClass('odd');
+		$(document).ready(function(){
+			table_init("${ contextpath}/${lowerCaseObjName}","${ contextpath}/${lowerCaseObjName}/list?");
+		});
+</script>
+
+ 

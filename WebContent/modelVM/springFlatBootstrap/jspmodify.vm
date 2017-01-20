@@ -1,0 +1,123 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<jsp:include page="/admin/include/head.jsp"></jsp:include>
+<jsp:include page="/admin/include/left.jsp"></jsp:include>
+<script src="${contextpath}/admin/js/common.js"></script>
+<div id="main">
+			<div class="container-fluid">
+				 <div class="page-header">
+					<div class="pull-left">
+						<h4>&nbsp;&nbsp;<i class="icon-table"></i>${ObjCN}</h4>
+					</div>
+				</div>
+				<div class="breadcrumbs">
+					<ul>
+						<li>
+							<a href="${contextpath}/">首页</a>
+							<i class="icon-angle-right"></i>
+						</li>
+						<li>
+							<a href="${contextpath}/${lowerCaseObjName}/list">${ObjCN}</a>
+							<i class="icon-angle-right"></i>
+						</li>
+						<li>
+							<a href="#">修改</a>
+						</li>
+					</ul>
+					<div class="close-bread">
+						<a href="#"><i class="icon-remove"></i></a>
+					</div>
+					
+				</div>
+  				<!--新增页面  -->
+					 <div class="row-fluid">
+					<div class="span12">
+						<div class="box  box-bordered">
+								<div class="box-title">
+									<h3><i class="icon-edit"></i>修改${ObjCN}</h3>
+								</div>
+							<div class="box-content nopadding">
+								<form action="" method="POST" class='form-horizontal form-bordered' id="${firstLowObjName}Form">
+									 
+									#foreach (${element} in ${configBasicExtendInfoList})
+										#if(${element.IS_CREATE_DISPLAY}=='true')
+                                        <div class="control-group">
+                                          <label for="${element.FIELD_ENGLISH_NAME}" class="control-label">${element.FIELD_DESCRIBE}：</label>
+                                          <div class="controls">
+											#if(${element.CONTROL_TYPE}=='date')
+                                            <input type="date" class="input-medium" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}" data-rule="${element.FIELD_DESCRIBE}:required;${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"/>
+											#elseif(${element.CONTROL_TYPE}=='select')
+												<select id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"   class='select2-me input-xlarge'><option value="true">是</option><option value="false">否</option></select>
+											#elseif(${element.CONTROL_TYPE}=='checkbox')
+												<input type="checkbox" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#elseif(${element.CONTROL_TYPE}=='radio')
+												<input type="radio" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#else
+											   <input type="text" class="input-xlarge" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIRSTLOW_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}" 
+													value="${ ${firstLowObjName}.${element.FIRSTLOW_ENGLISH_NAME}}"
+												/>
+ 											#end
+										  </div>
+                                        </div>
+										#end
+                                       #end
+									<div class="form-actions">
+										<input type="submit" class="btn btn-primary doSubmit" value="保 存">
+										<a href='${contextpath}/${lowerCaseObjName}/list' class="btn btn-danger" >返 回</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			  <!-- 新增页面  -->
+				</div>
+ 			</div>
+ 
+ <script type="text/javascript">
+
+ 
+ 	$(document).ready(
+ 		function(){
+ 			$('#${firstLowObjName}Form').on("click", ".doSubmit", function(e){
+ 				var a=$(e.delegateTarget).trigger("validate");
+ 			})
+ 			.validator({
+ 			    fields: {
+ 			    	#foreach (${element} in ${configBasicExtendInfoList})
+ 			    		#if(${element.IS_NEED}=='true')
+ 			    			'${firstLowObjName}.${element.FIRSTLOW_ENGLISH_NAME}':'required;',
+ 			    	    #end
+ 			    	#end
+ 			        
+ 			    },
+ 			   valid: function(form){
+ 				  var me = this;
+ 			        // 提交表单之前，hold住表单，防止重复提交
+ 			        me.holdSubmit();
+ 			        $.ajax({
+ 			            url: "${contextpath}/${lowerCaseObjName}/modifyaction",
+ 			            data: $(form).serialize(),
+ 			            type: "POST",
+ 			            success: function(data){
+ 			                // 提交表单成功后，释放hold，如果不释放hold，就变成了只能提交一次的表单
+ 			                me.holdSubmit(false);
+ 			                if(data.status=='success'){
+ 			                	sAlert('当前操作成功');
+ 			                	sOpen('${contextpath}/${lowerCaseObjName}/list');
+ 			                }else{
+ 			                	sAlert('当前操作失败');
+ 			                }
+ 			               
+ 			            }
+ 			        });
+ 			    }
+ 			})
+ 			;
+ 		 
+ 		}		
+ 	);
+ </script>
+ 

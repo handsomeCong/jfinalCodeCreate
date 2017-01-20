@@ -1,0 +1,21 @@
+package ${packagePath}.${lowerCaseObjName}.model;
+import java.util.Date;
+import cn.samehope.frame.annotation.TableField;
+import cn.samehope.frame.model.Model;
+
+public class ${ObjName} extends Model<${ObjName}> {
+    #foreach (${element} in ${configBasicExtendInfoList})
+    	/* ${element.FIELD_DESCRIBE} */
+    	private ${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME};
+    #end
+     #foreach (${element} in ${configBasicExtendInfoList})
+    	 
+  		@TableField
+		public ${element.OBJECT_ATTRIBUTE_TYPE} get${element.FIRSTUP_ENGLISH_NAME}() {
+			return ${element.FIRSTLOW_ENGLISH_NAME};
+		}
+		public void set${element.FIRSTUP_ENGLISH_NAME}(${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME}) {
+			this.${element.FIRSTLOW_ENGLISH_NAME} = ${element.FIRSTLOW_ENGLISH_NAME};
+		}
+    #end
+}

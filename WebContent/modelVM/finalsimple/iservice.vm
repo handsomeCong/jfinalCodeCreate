@@ -1,0 +1,5 @@
+package ${packagePath}.${lowerCaseObjName}.service; 
+import com.jdk2010.base.service.IBaseService;
+public interface I${ObjName}Service  extends IBaseService{
+
+}

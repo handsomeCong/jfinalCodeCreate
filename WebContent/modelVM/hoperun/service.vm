@@ -1,0 +1,29 @@
+package ${packagePath}.service;
+import com.hoperun.scfs.common.util.PageResult;
+import ${packagePath}.dto.${ObjName}DTO;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public interface I${ObjName}Service{
+
+	public ${ObjName}DTO save(${ObjName}DTO ${firstLowObjName}DTO);
+
+	public ${ObjName}DTO update(${ObjName}DTO ${firstLowObjName}DTO);
+
+	public ${ObjName}DTO findById(Long id);
+
+	public Integer deleteById(Long id);
+
+	public List<${ObjName}DTO> queryForList(String sql,Map<String, Object> queryMap);
+
+	public List<Map<String, Object>> queryForMapList(String sql,Map<String, Object> queryMap);
+
+	public PageResult queryForPageList(String condition, Map<String, Object> queryMap,PageResult pageResult);
+
+	public PageResult queryForPageMapList(String condition, Map<String, Object> queryMap,PageResult pageResult);
+
+	public Integer updateSql(String sql,Map<String, Object> queryMap);
+
+
+}

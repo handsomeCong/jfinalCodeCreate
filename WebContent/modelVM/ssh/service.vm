@@ -1,0 +1,24 @@
+package ${packagePath}.web.${lowerCaseObjName}.service;
+
+import java.util.List;
+
+import ${packagePath}.base.vo.BasePageVO;
+import ${packagePath}.model.${ObjName};
+
+public interface ${ObjName}Service{
+	 
+	public List<${ObjName}> search(BasePageVO bpVo, String name,
+			String columnName, String sortColumn, String sortType);
+
+	public void delete(String key);
+	
+	public void save(${ObjName} model);
+	
+	public ${ObjName} findByPK(String key);
+ 
+	public Object select(final String SQL, final Class[] c);
+	
+	public Object selectByPartition(final String SQL, final int start,final int size,final Class[] c);
+	
+	public  ${ObjName} findById(String sql);
+}

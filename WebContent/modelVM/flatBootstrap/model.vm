@@ -1,0 +1,26 @@
+package ${packagePath}.${lowerCaseObjName}.model;
+import platform.base.ext.PageBean;
+import platform.base.ext.PageUtil;
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
+
+public class ${ObjName} extends Model<${ObjName}> {
+	public static final ${ObjName} dao = new ${ObjName}();
+	
+	public Page getPageList(String searchSQL,String orderSQL, PageBean pageBean) {
+		StringBuilder sql = new StringBuilder("select * ");
+		StringBuilder sqlFrom = new StringBuilder("from ${tableName} t where 1=1");
+		sqlFrom.append(searchSQL);
+		sqlFrom.append(orderSQL);
+		Page paginate = paginate(pageBean.getStart(), pageBean.getLimit(), sql.toString(), sqlFrom.toString());
+		return paginate;
+	}
+
+	public boolean delete(String[] delIds) {
+		boolean b = false;
+		for (String id : delIds) {
+			b = deleteById(id);
+		}
+		return b;
+	}
+}

@@ -1,0 +1,112 @@
+package ${packagePath}.service;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.math.BigInteger;
+import com.hoperun.scfs.common.dialect.PostgresUtil;
+import com.hoperun.scfs.common.util.PageResult;
+import com.hoperun.scfs.org.daosupport.PgDaoSupport;
+import ${packagePath}.domain.${ObjName};
+import ${packagePath}.dto.${ObjName}DTO;
+import ${packagePath}.mapper.${ObjName}Mapper;
+import ${packagePath}.repository.${ObjName}Repository;
+
+@Service
+@Transactional
+public class ${ObjName}ServiceImpl implements I${ObjName}Service {
+
+	private final Logger log = LoggerFactory.getLogger(${ObjName}ServiceImpl.class);
+
+	@Inject
+	private ${ObjName}Mapper ${firstLowObjName}Mapper;
+
+	@Inject
+	PgDaoSupport pgDaoSupport;
+
+	@Override
+	public ${ObjName}DTO save(${ObjName}DTO ${firstLowObjName}DTO) {
+		${ObjName} ${firstLowObjName} = ${firstLowObjName}Mapper.${firstLowObjName}DTOTo${ObjName}(${firstLowObjName}DTO);
+		pgDaoSupport.persist(${firstLowObjName});
+		${firstLowObjName}DTO = ${firstLowObjName}Mapper.${firstLowObjName}To${ObjName}DTO(${firstLowObjName});
+		return ${firstLowObjName}DTO;
+	}
+
+	@Override
+	public ${ObjName}DTO update(${ObjName}DTO ${firstLowObjName}DTO) {
+		${ObjName} ${firstLowObjName} = ${firstLowObjName}Mapper.${firstLowObjName}DTOTo${ObjName}(${firstLowObjName}DTO);
+		pgDaoSupport.merge(${firstLowObjName});
+		${firstLowObjName}DTO = ${firstLowObjName}Mapper.${firstLowObjName}To${ObjName}DTO(${firstLowObjName});
+		return ${firstLowObjName}DTO;
+	}
+
+	@Override
+	public ${ObjName}DTO findById(Long id) {
+		${ObjName} ${firstLowObjName} = pgDaoSupport.findById(${ObjName}.class, id);
+		return ${firstLowObjName}Mapper.${firstLowObjName}To${ObjName}DTO(${firstLowObjName});
+	}
+
+	@Override
+	public Integer deleteById(Long id) {
+		Map<String, Object> queryMap = new HashMap<String, Object>();
+		queryMap.put("id", id);
+		return updateSql("delete from ${tableName} where id=:id",queryMap);
+	}
+
+	@Override
+	public List<${ObjName}DTO> queryForList(String sql,Map<String, Object> queryMap) {
+		List<${ObjName}> data = pgDaoSupport.queryForList(sql,queryMap,${ObjName}.class);
+		return ${firstLowObjName}Mapper.${firstLowObjName}sTo${ObjName}DTOs(data);
+
+	}
+
+	@Override
+	public List<Map<String, Object>> queryForMapList(String sql,Map<String, Object> queryMap) {
+		List<Map<String, Object>> data = pgDaoSupport.queryForMapList(sql,queryMap);
+		return data;
+	}
+
+	@Override
+	public PageResult queryForPageList(String condition,Map<String, Object> queryMap,PageResult pageResult) {
+		String sql = "select * from ${tableName} " + condition;
+		String pageSql = PostgresUtil.getPageSql(sql, pageResult);
+		String countSql = "select count(*) from ${tableName} " + condition;
+		List<${ObjName}DTO> ${firstLowObjName}List = queryForList(pageSql,queryMap);
+		BigInteger totalCount = (BigInteger) pgDaoSupport
+				.getSingleColumn(countSql,queryMap);
+		totalCount = totalCount != null ? totalCount:BigInteger.ZERO;
+		pageResult.setData(${firstLowObjName}List);
+		pageResult.setTotalCount(totalCount.intValue());
+		return pageResult;
+	}
+
+	@Override
+	public PageResult queryForPageMapList(String condition,Map<String, Object> queryMap,
+			PageResult pageResult) {
+		String sql = "select * from ${tableName} " + condition;
+		String pageSql = PostgresUtil.getPageSql(sql, pageResult);
+		String countSql = "select count(*) from ${tableName} " + condition;
+		List<Map<String, Object>> ${firstLowObjName}List = queryForMapList(pageSql,queryMap);
+		BigInteger totalCount = (BigInteger) pgDaoSupport
+				.getSingleColumn(countSql,queryMap);
+		totalCount = totalCount != null ? totalCount:BigInteger.ZERO;
+		pageResult.setData(${firstLowObjName}List);
+		pageResult.setTotalCount(totalCount.intValue());
+		return pageResult;
+	}
+
+	@Override
+	public Integer updateSql(String sql,Map<String, Object> queryMap) {
+		return pgDaoSupport.updateSql(sql,queryMap);
+	}
+
+}

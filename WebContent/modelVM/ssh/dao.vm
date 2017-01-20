@@ -1,0 +1,42 @@
+package ${packageNewName}.model.dao;
+
+import java.util.List;
+import ${packageNewName}.base.vo.BaseVO;
+import org.springframework.dao.DataAccessException;
+import ${packageNewName}.base.vo.BasePageVO;
+import ${packageNewName}.model.$table.getClassName();
+
+public interface $table.getClassName()Dao extends Dao{
+	/**
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public $table.getClassName() findByPK(String key);
+
+	/**
+	 * 删除
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public void delete(String key);
+	
+	/**
+	 * 返回 $table.getName() 中的所有记录.
+	 */
+	public List<$table.getClassName()> findAll () ;
+	
+	/**
+	 * 保存
+	 */
+	public void save(BaseVO vo);
+	
+    public List<$table.getClassName()> search(BasePageVO bpVo, String name, String columnName, String sortColumn, String sortType);
+
+	
+	public Object selectSql(final String SQL,final Class[] c) throws DataAccessException;
+	
+	public Object selectSqlPartition(final String SQL, final int start,final int size,final Class[] c) throws DataAccessException;
+	public $table.getClassName() findById(String sql);
+}

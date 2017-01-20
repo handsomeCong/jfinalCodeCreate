@@ -1,0 +1,47 @@
+package ${packagePath}.web.${lowerCaseObjName}.service.impl;
+
+import ${packagePath}.base.vo.BasePageVO;
+import ${packagePath}.model.dao.impl.base.Base${ObjName}DaoImpl;
+import ${packagePath}.model.dao.${ObjName}Dao;
+import ${packagePath}.web.${lowerCaseObjName}.service.${ObjName}Service;
+import java.util.List;
+import ${packagePath}.model.${ObjName};
+public class ${ObjName}ServiceImpl implements ${ObjName}Service{
+
+		${ObjName}Dao ${firstLowObjName}Dao;
+
+	public List<${ObjName}> search(BasePageVO bpVo, String name, String columnName, String sortColumn, String sortType) {
+		return ${firstLowObjName}Dao.search(bpVo, name, columnName, sortColumn, sortType);
+	}
+
+	public void delete(String key) {
+		${firstLowObjName}Dao.delete(key);
+	}
+
+	public void save(${ObjName} model) {
+		${firstLowObjName}Dao.save(model);
+	}
+
+	public ${ObjName} findByPK(String key) {
+		return ${firstLowObjName}Dao.findByPK(key);
+	}
+
+	public ${ObjName}Dao get${ObjName}Dao() {
+		return ${firstLowObjName}Dao;
+	}
+
+	public void set${ObjName}Dao (${ObjName}Dao dao) {
+		this.${firstLowObjName}Dao = dao;
+	}
+
+	public Object select(final String SQL, final Class[] c) {
+		return ${firstLowObjName}Dao.selectSql(SQL, c);
+	}
+	
+	public Object selectByPartition(final String SQL, final int start,final int size,final Class[] c) {
+		return ${firstLowObjName}Dao.selectSqlPartition(SQL, start, size, c);
+	}
+	public  ${ObjName} findById(String sql){
+		return ${firstLowObjName}Dao.findById(sql);
+	}
+}

@@ -1,0 +1,7 @@
+package ${packagePath}.${lowerCaseObjName}.service.impl;
+import org.springframework.stereotype.Service;
+import cn.samehope.systemconfig.service.BaseSamehopeServiceImpl;
+import ${packagePath}.${lowerCaseObjName}.service.I${ObjName}Service;
+@Service("${firstLowObjName}Service")
+public class ${ObjName}ServiceImpl extends BaseSamehopeServiceImpl implements I${ObjName}Service{
+}

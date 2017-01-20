@@ -1,0 +1,13 @@
+app.factory('${ObjName}Service', ['$resource','CONFIG', function($resource,CONFIG) {
+    return $resource(CONFIG.ROOT_URL+'/${lowerCaseObjName}s/:_id', {}, {
+        "query": {
+            method: 'GET',
+            url: CONFIG.ROOT_URL+'/${lowerCaseObjName}s/page/:current/:pageSize',
+            params: {'current': '@current','pageSize':'@pageSize'},
+            isArray: false
+        },
+        "update": {
+            method: 'PUT'
+        }
+    });
+}]);

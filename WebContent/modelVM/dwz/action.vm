@@ -1,0 +1,74 @@
+package ${packagePath}.${aLObjName}.action;
+import platform.base.jfinalext.BoxAction;
+import platform.base.util.PlatformTool;
+import platform.base.jfinalext.PageBean;
+import ${packagePath}.${aLObjName}.model.${ObjName};
+import com.jfinal.plugin.activerecord.Page;
+public class ${ObjName}Action extends BoxAction {
+	public void index() {
+	    PageBean pageBean=getPageBean();
+		pageBean.setDir("DESC");
+		pageBean.setSort("ID");
+		Page pageList = ${ObjName}.dao.getPageList(
+				getSearchColumn(),
+				getSearch(),pageBean
+				);
+		setAttr("pageList", pageList);
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}.jsp");
+	}	
+ public void json() {
+		Page pageList = ${ObjName}.dao.getPageList(getSearch(), getPageBean());
+		setAttr("pageList", pageList);
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}_json.jsp");
+	}
+	
+	public void add() {
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}_add.jsp");
+	}
+	
+	public void saveAdd() {
+		${ObjName} model = getModel(${ObjName}.class);
+		model.set("ID", PlatformTool.generateUUID());
+		String id = model.get("ID");
+		model.save();
+		toDwzJson(200, "保存成功！","${fLObjName}Nav");
+		 
+	}
+	
+	public void modify() {
+		String id = getPara();
+		${ObjName} model = ${ObjName}.dao.findById(id);
+		setAttr("model", model);
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}_modify.jsp");
+	}
+	
+	public void saveModify() {
+		${ObjName} model = getModel(${ObjName}.class);
+		String id = model.get("ID");
+		model.update();
+		toDwzJson(200, "保存成功！","${fLObjName}Nav");
+	}
+	
+	public void viewModify() {
+		String id = getPara("id");
+		${ObjName} model = ${ObjName}.dao.findById(id);
+		setAttr("model", model);
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}_viewModify.jsp");
+	}
+	
+	public void view() {
+		String id = getPara();
+		${ObjName} model = ${ObjName}.dao.findById(id);
+		setAttr("model", model);
+		render("/WEB-INF/jsp/${basePackagePath}/${aLObjName}/${fLObjName}_view.jsp");
+	}
+
+	public void delete() {
+		boolean b = ${ObjName}.dao.delete(this.getDelIds());
+		if (b) {
+			toDwzJson(200, "信息删除成功！","${fLObjName}Nav");
+		} else {
+			toDwzJson(300, "信息删除失败，请联系管理员！","${fLObjName}Nav");
+		}
+	}
+}

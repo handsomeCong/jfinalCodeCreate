@@ -1,0 +1,139 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<jsp:include page="/admin/include/head.jsp"></jsp:include>
+<jsp:include page="/admin/include/left.jsp"></jsp:include>
+<script src="${contextpath}/admin/js/common.js"></script>
+<div id="main">
+			<div class="container-fluid">
+				<div class="page-header">
+					<div class="pull-left">
+						<h1>${ObjCN}</h1>
+					</div>
+					<jsp:include page="/admin/include/main_head.jsp" />					
+				</div>
+				<div class="breadcrumbs">
+					<ul>
+						<li>
+							<a href="${contextpath}/">首页</a>
+							<i class="icon-angle-right"></i>
+						</li>
+						<li>
+							<a href="${contextpath}/${lowerCaseObjName}">${ObjCN}</a>
+						</li>
+					</ul>
+					<div class="close-bread">
+						<a href="#"><i class="icon-remove"></i></a>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="box box-color box-bordered">
+						<h4>
+							<div class="box">
+								 <div class="btn-group" >
+												<a href="#" data-toggle="dropdown" class="btn dropdown-toggle">导 出 <span class="caret"></span></a>
+												<ul class="dropdown-menu">
+													<li>
+														<a href="#">导出excel</a>
+													</li>
+													<li>
+														<a href="#">导出csv</a>
+													</li>
+													<li>
+														<a href="#">导出pdf</a>
+													</li>
+												</ul>
+									</div>
+									&nbsp;&nbsp;
+									<button class="btn btn-small btn-waring" id="table_add"><i class="icon-file"></i>&nbsp;&nbsp; 新 增</button>
+									&nbsp;&nbsp;
+									<button class="btn btn-small btn-waring" id="table_edit"><i class="icon-file"></i>&nbsp;&nbsp;编 辑</button>
+									&nbsp;&nbsp;
+									<button class="btn btn-small btn-waring" id="table_delete"><i class="icon-file"></i>&nbsp;&nbsp;删 除</button>
+						 			 &nbsp;&nbsp;
+						 			 
+									<div class="input-append input-prepend"  style="height:20px">
+											##查询表单		 
+									#set($count=0)	
+									#set($queryString="")
+									
+									#foreach (${element} in ${configBasicExtendInfoList})
+										 #if(${element.IS_SEARCH}=='true')
+											 #if($count==0)
+												#set($queryString=${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}")
+											 #else
+												#set($queryString=($queryString+"&"+${element.FIELD_ENGLISH_NAME}+"=${${element.FIELD_ENGLISH_NAME}}"))
+											 #end
+											 #set($count=$count+1)
+										 #end
+									 #end	
+									
+									#if($count!=0)
+										<form method="post" action="${contextpath}/${lowerCaseObjName}">
+									#end
+									#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_SEARCH}=='true')
+												  <input type="text" name="${element.FIELD_ENGLISH_NAME}" placeholder="请输入${element.FIELD_DESCRIBE}" value="${${element.FIELD_ENGLISH_NAME}}" class='input-medium'>&nbsp;&nbsp;
+												#end
+									#end		
+										
+									#if($count!=0)
+										<button class="btn btn-success" type="submit">查  询</button>
+										</form>
+									#end
+									</div>
+								</h4>
+								
+							</div>
+							 
+							<div class="box-content nopadding">
+								<table class="table table-hover table-nomargin table-colored-header">
+									<thead>
+										<tr>
+											<th><input type="checkbox" width="15px"  id="checkAll"/></th>
+											#foreach (${element} in ${configBasicExtendInfoList})
+												#if(${element.IS_TALBE_DISPLAY}=='true')
+												   <th>${element.FIELD_DESCRIBE}</th>
+												#end
+											#end
+											<th>操 作</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach items="${pageList.list}" var="item">
+										 
+									       <tr>
+    											<td><input type="checkbox" name="subBox" value="${item.ID}" /></td>
+    											#foreach (${element} in ${configBasicExtendInfoList})
+    											 #if(${element.IS_TALBE_DISPLAY}=='true')
+    											<td>
+    												#if(${element.CONTROL_TYPE}=='date')
+    													<fmt:formatDate value="${ item.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+    													${ item.${element.FIELD_ENGLISH_NAME}}
+    												#else
+    													${ item.${element.FIELD_ENGLISH_NAME}}
+    												#end
+    											</td>	
+				
+    											 #end
+												#end
+										  <td><a class="btn btn-small btn-waring" href="${contextpath}/${lowerCaseObjName}/view/${item.ID}">&nbsp; 查看</a></td>
+										   </tr>
+										</c:forEach>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			<page:page href="${contextpath}/${lowerCaseObjName}/${queryString}" data="pageList" />
+		</div>
+ 
+<script language="javascript">
+$(document).ready(function(){
+	table_init("${contextpath}/${lowerCaseObjName}","${contextpath}/${lowerCaseObjName}/${queryString}");
+});
+</script>
+<jsp:include page="/admin/include/footer.jsp"></jsp:include>

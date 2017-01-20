@@ -1,0 +1,48 @@
+package ${packageNewName}.model.dao.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.dao.DataAccessException;
+import ${packageNewName}.base.vo.BasePageVO;
+import ${packageNewName}.model.$table.getClassName();
+import ${packageNewName}.model.dao.$table.getClassName()Dao;
+import ${packageNewName}.model.dao.impl.base.Base$table.getClassName()DaoImpl;
+
+public class $table.getClassName()DaoImpl extends Base$table.getClassName()DaoImpl implements $table.getClassName()Dao{
+public List<$table.getClassName()> search(BasePageVO bpVo, String name,
+			String columnName, String sortColumn, String sortType) {
+		String query = null;
+		Map<String, Object> values = new HashMap<String, Object>();
+		if (name != null && !name.equals("")) {
+			query = "from $table.getClassName() where " + columnName
+					+ " like :name ";
+			if(sortColumn != null && !sortColumn.equals("")) {
+				query +=  "order by " + sortColumn + " " + sortType;
+			}
+			values.put("$table.getClassName()", "%" + name + "%");
+		} else {
+			query = "from $table.getClassName() ";
+			if(sortColumn != null && !sortColumn.equals("")) {
+				query +=  "order by " + sortColumn + " " + sortType;
+			}
+		}
+		int start = bpVo.getStart();
+		int size = bpVo.getPageSize();
+		bpVo.setTotalRows(getTotalRows(query, values));
+		return (List) selectWithPagination(query, values, start, size);
+	}
+	
+	public Object selectSql(final String SQL,final Class[] c) throws DataAccessException {
+		return select(SQL, c);
+	}
+	
+	public Object selectSqlPartition(final String SQL, final int start,final int size,final Class[] c) throws DataAccessException {
+		return selectWithPagination(SQL, start, size, c);
+	}
+	
+	@Override
+	public $table.getClassName() findById(String sql) {
+		return ($table.getClassName()) selectUniqueObject(sql,new Class[]{$table.getClassName().class});
+	}
+}

@@ -1,0 +1,145 @@
+'use strict';
+#set ($left='[')
+#set ($right=']')
+#set ($q='$')
+app.controller('${ObjName}ListCtrl', ['$scope', '$http', '$state', '$stateParams','$modal','${ObjName}Service','CONFIG',
+        function($scope, $http, $state, $stateParams,$modal,${ObjName}Service,CONFIG) {
+			var ctrlScope=$scope;
+            $scope.filter = {current: 1,pageSize:CONFIG.PAGE_SIZE};
+            for (var prop in $stateParams){
+                if ($stateParams${left}prop${right}){
+                    $scope.filter${left}prop${right} = $stateParams${left}prop${right};
+                }
+            }
+            $scope.showPage = function(page) {
+                $scope.page = page;
+                $scope.page.start = (page.current - 1) * page.pageSize + 1;
+                $scope.page.end = (page.current - 1) * page.pageSize + page.length;
+                $scope.page.maxSize = 7;
+            };
+
+            $scope.$watch('filter.current', function(_new, old, scope) {
+            if (_new != old)
+                $scope.query();
+             });
+            var page={};
+            $scope.query = function() {
+                    ${ObjName}Service.query({}, $scope.filter, function(res) {
+                        if (res.code =='0') {
+                            $scope.${firstLowObjName}s = res.data.data;
+                            page.length = res.data.totalPage;
+                            page.total=res.data.totalCount;
+                            page.current=res.data.pageIndex;
+                            page.pageSize=res.data.pageSize;
+                            $scope.showPage(page);
+                        } else {
+                            alert(res.message);
+                        }
+                    });
+                 };
+
+
+           $scope.query();
+
+           $scope.add = function() {
+                 var modalInstance =${q}modal.open({
+                         templateUrl: 'tpl/${jsPackage}/${ObjName}/add.html',  //指向上面创建的视图
+                         controller: ModalAddCtrl
+                     });
+            };
+
+            var ModalAddCtrl = function(${q}scope, ${q}modalInstance) {
+                ${q}scope.save=function(isValid){
+                    if(isValid){
+                    var _${firstLowObjName} = angular.copy($scope.${firstLowObjName});
+                     ${ObjName}Service.save({}, _${firstLowObjName}, function(res) {
+                         ${q}modalInstance.dismiss('cancel');
+                         ctrlScope.query();
+                    });
+                    }else{
+                        alert("页面验证不通过，请修改！");
+                        return false;
+                    }
+                }
+                $scope.cancel = function() {
+                    $modalInstance.dismiss('cancel');
+                };
+            }
+
+            $scope.edit = function(id) {
+                 $scope.${firstLowObjName}={};
+                 ${ObjName}Service.get({ "_id": id }, {}, function(res) {
+                    if (res.code =='0') {
+                        $scope.${firstLowObjName} = res.data;
+                        var modalInstance = ${q}modal.open({
+                         templateUrl: 'tpl/${jsPackage}/${ObjName}/edit.html',
+                         controller: ModalEditCtrl,
+                         resolve:{
+								${firstLowObjName}: function() {
+                                return $scope.${firstLowObjName};
+                            }
+                          }
+                     });
+                    }
+                });
+
+            };
+
+            var ModalEditCtrl = function(${q}scope, ${q}modalInstance,${firstLowObjName}) {
+                $scope.${firstLowObjName} = angular.copy(${firstLowObjName});
+                $scope.update=function(isValid){
+                 if(isValid){
+                    var _${firstLowObjName} = angular.copy($scope.${firstLowObjName});
+                     ${ObjName}Service.update({},_${firstLowObjName}, function(res) {
+                         ${q}modalInstance.dismiss('cancel');
+                       	 ctrlScope.query();
+                    });
+                    }else{
+                      	alert("页面验证不通过，请修改！");
+                        return false;
+                    }
+
+                }
+                $scope.cancel = function() {
+                    ${q}modalInstance.dismiss('cancel');
+                };
+            }
+
+
+            $scope.del = function(id) {
+                  var modalInstance = ${q}modal.open({
+						 template:'<div class="modal-dialog">'+
+                                '<div class="modal-content">'+
+                                   '<div class="modal-header">'+
+                                        '<button type="button" class="close" data-dismiss="modal" ng-click="cancel();"><span aria-hidden="true">&times;</span><span class="sr-only" >Close</span></button>'+
+                                        '<h4 class="modal-title" id="myModalLabel">信息</h4>'+
+                                    '</div>'+
+                                    '<div class="modal-body">'+
+                                            '是否确认删除该信息?'+
+                                    '</div>'+
+                                    '<div class="modal-footer">'+
+                                        '<button type="submit" class="btn btn-orange" ng-click="ok(\''+id+'\');">确认</button>'+
+                                        '<button type="button" class="btn btn-orange" ng-click="cancel();">取消</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>',
+                         controller: ModalDelCtrl
+                 });
+
+            };
+
+            var ModalDelCtrl = function(${q}scope, ${q}modalInstance) {
+                ${q}scope.cancel = function() {
+                    ${q}modalInstance.dismiss('cancel');
+                };
+                ${q}scope.ok = function(id) {
+                    ${q}modalInstance.dismiss('cancel');
+                    ${ObjName}Service.delete({"_id": id}, function(res) {
+                        ctrlScope.query();
+                    });
+                };
+            }
+
+              }
+          ]);
+

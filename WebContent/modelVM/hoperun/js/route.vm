@@ -1,0 +1,27 @@
+ #set ($left='[')
+#set ($right=']')
+#set ($q='$')
+ #set ($leftk='(')
+#set ($rightk=')')
+ ${q}stateProvider.state('${lowerCaseObjName}s', {
+                 url: '/${lowerCaseObjName}s',
+                        templateUrl: 'tpl/product/${ObjName}/list.html',
+                        resolve: {
+                            deps:['${q}ocLazyLoad',
+                                function(${q}ocLazyLoad){
+                                    return ${q}ocLazyLoad.load(['js/services/${jsPackage}/${ObjName}/${ObjName}Service.js','js/modules/${jsPackage}/${ObjName}/${ObjName}Ctrl.js']);
+                                }
+                            ${right}
+                        }
+                 })
+                .state('${lowerCaseObjName}sadd', {
+                        url: '/${lowerCaseObjName}s/add',
+                        templateUrl: 'tpl/product/${ObjName}/add.html',
+                        resolve: {
+                            deps: ['${q}ocLazyLoad',
+                                function(${q}ocLazyLoad) {
+                                    return ${q}ocLazyLoad.load(['js/services/${jsPackage}/${ObjName}/${ObjName}Service.js','js/modules/${jsPackage}/${ObjName}/${ObjName}Ctrl.js']);
+                                }
+                            ]
+                        }
+});

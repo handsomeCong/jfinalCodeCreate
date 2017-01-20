@@ -1,0 +1,91 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<jsp:include page="/admin/include/head.jsp"></jsp:include>
+<jsp:include page="/admin/include/left.jsp"></jsp:include>
+<script src="${contextpath}/admin/js/common.js"></script>
+<div id="main">
+			<div class="container-fluid">
+				<div class="page-header">
+					<div class="pull-left">
+						<h1>${ObjCN}编辑</h1>
+					</div>
+					<jsp:include page="/admin/include/main_head.jsp" />					
+				</div>
+				<div class="breadcrumbs">
+					<ul>
+						<li>
+							<a href="${contextpath}/">首页</a>
+							<i class="icon-angle-right"></i>
+						</li>
+						<li>
+							<a href="${contextpath}/${lowerCaseObjName}">${ObjCN}</a>
+							<i class="icon-angle-right"></i>
+						</li>
+						<li>
+							<a href="#">编辑</a>
+						</li>
+					</ul>
+					<div class="close-bread">
+						<a href="#"><i class="icon-remove"></i></a>
+					</div>
+					
+				</div>
+  				<!--编辑页面  -->
+					 <div class="row-fluid">
+					<div class="span12">
+						<div class="box box-color box-bordered">
+								<div class="box-title">
+									<h3><i class="icon-th-list"></i>${ObjCN}编辑</h3>
+								</div>
+							<div class="box-content nopadding">
+								<form action="${contextpath}/${lowerCaseObjName}/saveModify" method="POST" class='form-horizontal  form-bordered form-validate' >
+									 
+									#foreach (${element} in ${configBasicExtendInfoList})
+									#if(${element.FIELD_ENGLISH_NAME}=='ID'||${element.FIELD_ENGLISH_NAME}=='id')
+										<input type="hidden"  name="${firstLowObjName}.ID" value="${ model.ID}" id="ID"   />
+									#elseif(${element.FIELD_ENGLISH_NAME}!='ID')
+										#if(${element.IS_CREATE_DISPLAY}=='true')
+                                        <div class="control-group">
+                                          <label for="${element.FIELD_ENGLISH_NAME}" class="control-label">${element.FIELD_DESCRIBE}：</label>
+                                          <div class="controls">
+											
+											#if(${element.CONTROL_TYPE}=='date')
+                                            <input type="text" class="input-medium datepick" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" value="${ model.${element.FIELD_ENGLISH_NAME}}" data-rule="${element.FIELD_DESCRIBE}:required;${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"/>
+											#elseif(${element.CONTROL_TYPE}=='select')
+												<select id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"   class='select2-me input-xlarge'><option value="true">是</option><option value="false">否</option></select>
+											#elseif(${element.CONTROL_TYPE}=='checkbox')
+												<input type="checkbox" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#elseif(${element.CONTROL_TYPE}=='radio')
+												<input type="radio" id="${element.FIELD_ENGLISH_NAME}"  name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" />
+											#else
+											   <input type="text" class="input-medium" id="${element.FIELD_ENGLISH_NAME}" name="${firstLowObjName}.${element.FIELD_ENGLISH_NAME}" value="${ model.${element.FIELD_ENGLISH_NAME}}"
+												data-rule="${element.FIELD_DESCRIBE}:required;${firstLowObjName}.${element.FIELD_ENGLISH_NAME}"
+												/>
+ 											#end
+											 
+										  </div>
+                                        </div>
+										#end
+									   #end 
+                                      #end
+									<div class="form-actions">
+										<input type="submit" class="btn btn-primary" value="保 存">
+										<a href='${contextpath}/${lowerCaseObjName}' class="btn btn-danger" >返 回</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			  <!-- 编辑页面  -->
+					 				
+			
+				 
+				 
+				</div>
+ 			</div>
+ 
+ 
+<jsp:include page="/admin/include/footer.jsp"></jsp:include>

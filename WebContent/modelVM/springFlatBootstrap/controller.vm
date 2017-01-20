@@ -1,0 +1,87 @@
+package ${packagePath}.${lowerCaseObjName}.controller;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import cn.samehope.frame.controller.BaseController;
+import cn.samehope.systemconfig.util.Const;
+import cn.samehope.frame.util.DbKit;
+import cn.samehope.frame.util.Page;
+import cn.samehope.frame.util.ReturnData;
+import cn.samehope.frame.util.SecureUtil;
+import ${packagePath}.${lowerCaseObjName}.model.${ObjName};
+import ${packagePath}.${lowerCaseObjName}.service.I${ObjName}Service;
+
+@Controller
+@RequestMapping(value="/${lowerCaseObjName}")
+public class ${ObjName}Controller extends BaseController{
+	
+	@Resource
+	I${ObjName}Service ${firstLowObjName}Service;
+	
+	@RequestMapping("/list")
+	public String  list(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 DbKit dbKit=new DbKit("select * from ${tableName}  where 1=1 ");
+		 #set ($q='"')
+		String searchSQL="";
+		String orderSQL="";
+			#set($count=0)	
+			#set($querySQL="")
+    		#foreach (${element} in ${configBasicExtendInfoList})
+    			 #if(${element.IS_SEARCH}=='true')
+				   String ${element.FIELD_ENGLISH_NAME}=getPara("${element.FIELD_ENGLISH_NAME}");
+				   if(${element.FIELD_ENGLISH_NAME}!=null&&!"".equals(${element.FIELD_ENGLISH_NAME})){
+					 searchSQL=searchSQL+" and  ${element.FIELD_ENGLISH_NAME} LIKE '%$q+${element.FIELD_ENGLISH_NAME}+$q%'";
+					 setAttr("${element.FIELD_ENGLISH_NAME}",${element.FIELD_ENGLISH_NAME});
+					 dbKit.append(searchSQL);
+				   }
+    				 #set($count=$count+1)
+					
+    			 #end
+    		 #end	
+    	dbKit.append(orderSQL);
+		 Page pageList=${firstLowObjName}Service.queryForPageList(dbKit, getPage(),${ObjName}.class);
+		 setAttr("pageList", pageList);
+		 return "/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}";
+	}
+
+	@RequestMapping("/add")
+	public String  add(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		return "/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}_add";
+	}
+	@RequestMapping("/addaction")
+	public void  addaction(HttpServletRequest request,HttpServletResponse response) throws Exception {
+ 		${ObjName} ${firstLowObjName}=getModel(${ObjName}.class);
+ 					 ${firstLowObjName}.setId(SecureUtil.getUUID());
+ 		${firstLowObjName}Service.save(${firstLowObjName});
+ 		ReturnData returnData=new ReturnData(Const.SUCCESS,"操作成功");
+		renderJson(returnData);
+	}
+	
+	
+	@RequestMapping("/modify")
+	public String  modify(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String id=getPara("id");
+		${ObjName} ${firstLowObjName}=${firstLowObjName}Service.findById(id, ${ObjName}.class);
+					 setAttr("${firstLowObjName}", ${firstLowObjName});
+		return "/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}_modify";
+	}
+	@RequestMapping("/modifyaction")
+	public void  modifyaction(HttpServletRequest request,HttpServletResponse response) throws Exception {
+ 		${ObjName} ${firstLowObjName}=getModel(${ObjName}.class);
+  		${firstLowObjName}Service.update(${firstLowObjName});
+ 		ReturnData returnData=new ReturnData(Const.SUCCESS,"操作成功");
+		renderJson(returnData);
+	}
+	
+	@RequestMapping("/delete")
+	public void  delete(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String ids=getPara("ids");
+		${firstLowObjName}Service.deleteByIDS(ids,${ObjName}.class);
+		ReturnData returnData=new ReturnData(Const.SUCCESS,"操作成功");
+		renderJson(returnData);
+		 
+	}
+	
+}

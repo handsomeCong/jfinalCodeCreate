@@ -1,0 +1,15 @@
+package ${packagePath}.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+import ${packagePath}.domain.${ObjName};
+
+
+public interface ${ObjName}Repository extends JpaRepository<${ObjName},Long> {
+
+
+	@Query(value = "select * from ${tableName} where :condition", nativeQuery = true)
+	public List<${ObjName}> findAll${ObjName}sByCondition(String condition);
+
+}

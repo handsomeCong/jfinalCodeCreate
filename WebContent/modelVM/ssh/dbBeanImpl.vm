@@ -1,0 +1,16 @@
+package $implPackageName;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class $table.implClassName extends com.dj.jk123.db.$table.className {
+
+	public $table.implClassName () {
+		super();
+	}
+
+	public $table.implClassName (Connection con, String OIDValue) throws SQLException {
+		super(con, OIDValue);
+	}
+
+}

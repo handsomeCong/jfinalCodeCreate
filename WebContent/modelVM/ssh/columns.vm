@@ -1,0 +1,34 @@
+package $package;
+
+import java.util.List;
+
+import com.luba.base.vo.BaseVO;
+import com.luba.model.$table.getClassName();
+
+public interface $table.getClassName()Dao extends Dao{
+	/**
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public $table.getClassName() findByPK(String key);
+
+	/**
+	 * 删除
+	 * 按主键查询数据库表[$table.getName()]中的记录
+	 * @param key
+	 * @return
+	 */
+	public void delete(String key);
+	
+	/**
+	 * 返回 $table.getName() 中的所有记录.
+	 */
+	public List<$table.getClassName()> findAll () ;
+	
+	/**
+	 * 保存
+	 */
+	public void save(BaseVO vo);
+
+}

@@ -1,0 +1,141 @@
+package $package;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.dj.core.DbBean;
+import com.dj.sql.KeyGenerator;
+import com.dj.robot.Utils;
+import com.dj.config.Config;
+
+public class $table.className extends DbBean {
+	final static private String tableName = "$table.getName()";
+	final static private String pkName = "$table.getPkName()";
+	final static private String oidName = "$table.getOIDName()";
+
+#foreach ( $col in $cols)
+	private $col.getJavaType() $col.fieldName;	
+#end
+
+	public $table.getClassName()() {
+		super();
+	}
+
+	public $table.getClassName()(Connection con, String OIDValue) throws SQLException {
+		super(con, OIDValue);
+	}
+
+	static public $table.getClassName() newBean(Connection con,String pkValue) throws SQLException{
+		$table.getClassName() bean = new $table.getClassName()();
+		String sql = "select * from " + tableName + " where 1=1 ";
+		String[] pk = pkName.split(",");
+		for (int i=0;i<pk.length;i++){
+			if (pk[i].length()>0)
+				sql+="and "+pk[i]+"=? ";
+		}
+		PreparedStatement pst = con.prepareStatement(sql);
+		
+		pk = pkValue.split(",");
+		
+		for (int i=0;i<pk.length;i++){
+			pst.setString(i+1, pk[i]);
+		}
+		
+		ResultSet rs = pst.executeQuery();
+
+		if (rs.next()) {
+			bean.init(rs);
+		} else {
+			throw new SQLException(tableName +" not exist key " + pkValue);
+		}
+		rs.close();
+		pst.close();
+		
+		return bean;
+	}
+
+
+#foreach ( $col in $cols)
+	public $col.getJavaType() $col.getGetMethod()() {
+		return $col.getFieldName();
+	}
+#end
+
+
+	public void init(ResultSet rs) throws SQLException {
+#foreach ($col in $cols)
+		$col.getSetMethod()(rs.$col.getRSMethod()("$col.getName()"));
+#end
+	}
+
+	public void init(String elementsStr) {
+		String str = null;
+#foreach ($col in $cols)
+		str = StringUtils.getNestedString(elementsStr, "__$col.fieldName:", Config.separatorStr);
+		if (str!=null)
+			$col.getSetMethod()(Utils.$col.getStringToMethod()(str));	
+#end
+	}	
+
+	public void save(Connection con) throws SQLException {
+		String sql = null;
+		if (StringUtils.isEmpty(getOIDValue())||getOIDValue().equals("0")||getOIDValue().equals("null")){		
+			sql = $table.getInsertStr();
+			initOID(KeyGenerator.getNewOID(con));
+			setCreateDate(new Timestamp(System.currentTimeMillis()));
+			setUpdateDate(new Timestamp(System.currentTimeMillis()));		}
+		else{
+			sql = $table.getUpdateStr();
+			setUpdateDate(new Timestamp(System.currentTimeMillis()));
+		}
+		PreparedStatement pst = con.prepareStatement(sql);
+		
+		int i=1;
+		
+#foreach ($col in $cols)
+	#if (!($col.FieldName == "record" || $col.FieldName == "id"))
+		pst.$col.getPSTMethod()(i++, $col.getGetMethod()());
+	#end
+#end	
+
+		pst.setString(i, getOIDValue());
+		
+		pst.execute();
+		pst.close();
+	}
+
+#foreach ($col in $cols)
+	public void $col.getSetMethod()($col.getJavaType() $col.getName()) {
+		this.$col.getFieldName() = $col.getName();
+	}
+#end	
+
+	protected String getPkName() {
+		return pkName;
+	}
+
+	protected String getTableName() {
+		return tableName;
+	}
+
+	public String get(String name) {
+#foreach ($col in $cols)
+		if (name.equalsIgnoreCase("$col.getName()")) return toString($col.fieldName);
+#end	
+		return "***";
+	}
+
+	protected String getOIDName() {
+		return oidName;
+	}
+
+	protected void initOID(String value) {
+		$table.getInitOIDMethod();
+	}
+	
+}

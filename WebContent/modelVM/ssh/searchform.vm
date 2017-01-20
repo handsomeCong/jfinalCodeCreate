@@ -1,0 +1,56 @@
+package ${packagePath}.web.${lowerCaseObjName}.form;
+
+import ${packagePath}.base.form.BasePageForm;
+
+public class ${ObjName}SearchForm extends BasePageForm {
+	private String keyword;
+	private String searchReset = "0";
+
+	private String[] keys;
+	private String sortColumn;
+	private String sortType;
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortType() {
+		return sortType;
+	}
+
+	public void setSortType(String sortType) {
+		this.sortType = sortType;
+	}
+
+	public String getKeyword() {
+
+		return keyword;
+
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public String[] getKeys() {
+		return keys;
+	}
+
+	public void setKeys(String[] keys) {
+		this.keys = keys;
+	}
+
+	public String getSearchReset() {
+		return searchReset;
+	}
+
+	public void setSearchReset(String searchReset) {
+		this.searchReset = searchReset;
+	}
+
+	
+}

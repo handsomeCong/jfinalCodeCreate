@@ -1,0 +1,136 @@
+package ${packagePath}.rest;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
+import java.util.HashMap;
+import com.codahale.metrics.annotation.Timed;
+import com.hoperun.scfs.common.util.HeaderUtil;
+import com.hoperun.scfs.common.util.PaginationUtil;
+import ${packagePath}.domain.${ObjName};
+import ${packagePath}.dto.${ObjName}DTO;
+import ${packagePath}.mapper.${ObjName}Mapper;
+import ${packagePath}.service.I${ObjName}Service;
+import com.hoperun.scfs.common.constants.Constants;
+import com.hoperun.scfs.common.util.PageResult;
+import com.hoperun.scfs.common.ResponseData;
+
+
+@RestController
+@RequestMapping("/api")
+public class ${ObjName}Resource {
+
+    private final Logger log = LoggerFactory.getLogger(${ObjName}Resource.class);
+
+    @Inject
+    private I${ObjName}Service ${firstLowObjName}Service;
+
+    @Inject
+    private ${ObjName}Mapper ${firstLowObjName}Mapper;
+
+
+    @SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity create${ObjName}(@RequestBody ${ObjName}DTO ${firstLowObjName}DTO)
+			throws URISyntaxException {
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		${ObjName}DTO result = ${firstLowObjName}Service.save(${firstLowObjName}DTO);
+		ResponseData data = new ResponseData(sCode, sMessage, result);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity update${ObjName}(@RequestBody ${ObjName}DTO ${firstLowObjName}DTO)
+			throws URISyntaxException {
+		${ObjName}DTO result = ${firstLowObjName}Service.update(${firstLowObjName}DTO);
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		ResponseData data = new ResponseData(sCode, sMessage, result);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity get${ObjName}(@PathVariable Long id) {
+		${ObjName}DTO ${firstLowObjName}DTO = ${firstLowObjName}Service.findById(id);
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		if (${firstLowObjName}DTO == null) {
+			sCode = "-1";
+			sMessage = id + "不存在";
+		}
+		ResponseData data = new ResponseData(sCode, sMessage, ${firstLowObjName}DTO);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity delete${ObjName}(@PathVariable Long id) {
+		${firstLowObjName}Service.deleteById(id);
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		ResponseData data = new ResponseData(sCode, sMessage, null);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity get${ObjName}List() {
+		String sql = "select * from  ${tableName} where 1=1 ";
+		String condition = "";
+		Map<String,Object> queryMap=new HashMap<String,Object>();
+		List<${ObjName}DTO> result = ${firstLowObjName}Service.queryForList(sql + condition,queryMap);
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		ResponseData data = new ResponseData(sCode, sMessage, result);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/${lowerCaseObjName}s/page/{pageIndex}/{pageSize}/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity get${ObjName}Page(@PathVariable Integer pageIndex,
+			@PathVariable Integer pageSize, @PathVariable String id) {
+		PageResult pageResult = new PageResult(pageSize, pageIndex);
+		String condition = "";
+		Map<String,Object> queryMap=new HashMap<String,Object>();
+		pageResult = ${firstLowObjName}Service.queryForPageList(condition,queryMap,pageResult);
+		String sCode = Constants.RESPONSE_SUCCESS_CODE;
+		String sMessage = Constants.RESPONSE_SUCCESS_MESSAGE;
+		ResponseData data = new ResponseData(sCode, sMessage, pageResult);
+		return new ResponseEntity<>(data, HttpStatus.OK);
+
+	}
+
+
+
+}

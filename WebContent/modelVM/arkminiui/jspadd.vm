@@ -1,0 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="box" uri="http://www.boxfmk.org.cn/boxUI"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新增</title>
+<script src="${contextpath}/ui/boot.js" type="text/javascript"></script>
+<script src="${contextpath}/${jsPathObj}/${aLObjName}.js" type="text/javascript"></script>
+</head>
+<body>
+<form id="postform" name="postform" class="mini-Form" action="${contextpath}/${aLObjName}/saveAdd" method="post">
+<fieldset class="fieldsetcss"><legend>${ObjCN}</legend>
+<div class="formDiv">
+<table class="formtb" style="width: 800">
+#set($col='1')
+#foreach (${element} in ${configBasicExtendInfoList})
+#if(${element.IS_CREATE_DISPLAY}=='1')
+#if($col=='1')
+<tr>
+#end
+	<td class="td1" style="width: 200px">${element.FIELD_DESCRIBE}：</td>
+	<td class="td2" style="width: 200px"><input type="text" name="${fLObjName}.${element.FIELD_ENGLISH_NAME}" class="${element.CONTROL_TYPE}" #if(${element.VALIDATE_INFO}=='1') required="true" #else required="false" #end vtype="" value="" id="${element.FIELD_ENGLISH_NAME}" emptyText="请输入${element.FIELD_DESCRIBE}"></td>
+#if($col=='2')
+</tr>
+#set($col='1')
+#else
+#set($col='2')
+#end
+#end
+#end
+</table>
+</div>
+<div style="text-align: center; padding: 10px;"><a class="mini-button" onclick="submitMe(this)" target="#postform" iconCls="icon-ok" style="width: 60px; margin-right: 20px;">确定</a> <a class="mini-button" onclick="closeMe('close')" iconCls="icon-cancel" style="width: 60px;">取消</a></div>
+</fieldset>
+</form>
+</body>
+</html>
+

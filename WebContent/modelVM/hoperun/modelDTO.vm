@@ -1,0 +1,41 @@
+package ${packagePath}.dto;
+import java.util.Date;
+import java.io.Serializable;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Objects;
+import java.math.BigDecimal;
+
+
+
+public class ${ObjName}DTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+    #foreach (${element} in ${configBasicExtendInfoList})
+    	/* ${element.FIELD_DESCRIBE} */
+
+    	private ${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME};
+    #end
+     #foreach (${element} in ${configBasicExtendInfoList})
+
+
+
+				public ${element.OBJECT_ATTRIBUTE_TYPE} get${element.FIRSTUP_ENGLISH_NAME}() {
+					return ${element.FIRSTLOW_ENGLISH_NAME};
+				}
+
+				public void set${element.FIRSTUP_ENGLISH_NAME}(${element.OBJECT_ATTRIBUTE_TYPE} ${element.FIRSTLOW_ENGLISH_NAME}) {
+					this.${element.FIRSTLOW_ENGLISH_NAME} = ${element.FIRSTLOW_ENGLISH_NAME};
+				}
+
+
+    #end
+     @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+}

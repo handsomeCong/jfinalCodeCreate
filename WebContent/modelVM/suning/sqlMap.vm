@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="${lowerCaseObjName}">
+
+	<sql id = "find${ObjName}ByPage">
+	<![CDATA[
+	 SELECT 
+	   #foreach (${element} in ${configBasicExtendInfoList})
+	   		t.${element.FIELD_ENGLISH_NAME},
+	   #end
+	   FROM ${tableName} t
+	   LIMIT :startNum,:perNum
+	  ]]>
+    </sql>
+    
+    <sql id="get${ObjName}Count">
+		SELECT
+		count(*) as totalRows
+		FROM ${tableName}
+	</sql>
+	
+	
+	<sql id="get${ObjName}ByCode">
+        <![CDATA[   
+            SELECT 
+            #foreach (${element} in ${configBasicExtendInfoList})
+	   		t.${element.FIELD_ENGLISH_NAME},
+	   		#end
+            FROM ${tableName} t
+            WHERE t.code =:code
+        ]]>
+	</sql>
+	<sql id="del${ObjName}ByCode">
+        <![CDATA[   
+           delete from ${tableName}  WHERE code  IN (${code})
+        ]]>
+	</sql>
+    
+</sqlMap>

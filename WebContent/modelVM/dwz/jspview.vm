@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+ <div class="pageContent">
+<form id="postform" name="postform" action="${contextpath}/${aLObjName}/saveModify" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+<input type="hidden" class="mini-hidden" name="${fLObjName}.ID" id="${aLObjName}Id" value="${model.ID}">
+<div class="pageFormContent" layoutH="56">
+#foreach (${element} in ${configBasicExtendInfoList})
+#if(${element.IS_CREATE_DISPLAY}=='1')
+
+<p>
+	<label>${element.FIELD_DESCRIBE}：</label>
+	#if(${element.CONTROL_TYPE}=='date')
+	<fmt:formatDate value="${ model.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+	${${element.FIELD_ENGLISH_NAME}}
+	#else
+	${ model.${element.FIELD_ENGLISH_NAME}}
+	#end
+</p>
+#end
+#end
+
+</div>
+<div class="formBar">
+			<ul>
+				<li>
+					<div class="button"><div class="buttonContent"><button type="button" class="close">关闭</button></div></div>
+				</li>
+			</ul>
+		</div>
+</form>
+</div>

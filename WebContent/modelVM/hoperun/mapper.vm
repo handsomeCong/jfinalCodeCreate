@@ -1,0 +1,23 @@
+package ${packagePath}.mapper;
+import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import ${packagePath}.domain.${ObjName};
+import ${packagePath}.dto.${ObjName}DTO;
+
+@Mapper(componentModel = "spring", uses = {})
+public interface ${ObjName}Mapper {
+
+    ${ObjName}DTO ${firstLowObjName}To${ObjName}DTO(${ObjName} ${firstLowObjName});
+
+    ${ObjName} ${firstLowObjName}DTOTo${ObjName}(${ObjName}DTO ${firstLowObjName}DTO);
+
+    List<${ObjName}DTO> ${firstLowObjName}sTo${ObjName}DTOs(
+			List<${ObjName}> ${firstLowObjName}s);
+
+	List<${ObjName}> ${firstLowObjName}DTOsTo${ObjName}s(
+			List<${ObjName}DTO> ${firstLowObjName}DTOs);
+
+
+}

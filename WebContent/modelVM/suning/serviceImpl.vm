@@ -1,0 +1,101 @@
+package ${packagePath}.service.${lowerCaseObjName};
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.suning.ibms.util.CollectionUtil;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.suning.framework.dal.client.DalClient;
+import ${packagePath}.intf.common.CommonService;
+import ${packagePath}.entity.${lowerCaseObjName}.${ObjName}Entity;
+import ${packagePath}.intf.${lowerCaseObjName}.${ObjName}Service;
+import ${packagePath}.constants.IbmsConstants;
+ /**
+ * ${ObjCN} 
+ * @author 15060195
+ *
+ */
+
+@Service
+public class ${ObjName}ServiceImpl   implements ${ObjName}Service{
+		
+	@Resource
+    private CommonService commonService;
+    
+    /**
+     * 
+     * 功能描述: <br>
+     * 〈功能详细描述〉
+     *  分页获取数量
+     * @return
+     * @see [相关类/方法](可选)
+     * @since [产品/模块版本](可选)
+     */
+	 
+	 public List<Map<String, Object>> get${ObjName}Count(Map<String, Object> map) 
+	 {
+	 	
+	 	 return commonService.queryForList("${lowerCaseObjName}.get${ObjName}Count", map);
+	 }
+	 
+	 /**
+     * 
+     * 功能描述: <br>
+     * 〈功能详细描述〉
+     *  分页获取list
+     * @return
+     * @see [相关类/方法](可选)
+     * @since [产品/模块版本](可选)
+     */
+    public List<${ObjName}Entity> getAll${ObjName}Page(Map<String, Object> map){
+    	 Object objNum = map.get("pageNum");
+        if (null != objNum) {
+            int pageNum = Integer.valueOf(objNum.toString());
+            int startNum = 0;
+            int perNum = 0;
+
+            Object pageSizeNum = map.get("pageSize");
+            if (null != pageSizeNum) {
+                int pageSize = Integer.valueOf(pageSizeNum.toString());
+
+                startNum = (pageNum - IbmsConstants.Int.ONE) * pageSize;
+                perNum = pageSize;
+            } else {
+                startNum = (pageNum - IbmsConstants.Int.ONE) * IbmsConstants.Int.TEN;
+                perNum = IbmsConstants.Int.TEN;
+            }
+            map.put("startNum", startNum);
+            map.put("perNum", perNum);
+        }
+        return commonService.queryForList("${lowerCaseObjName}.find${ObjName}ByPage", map, ${ObjName}Entity.class);
+    }
+    
+    public void save${ObjName}(List<${ObjName}Entity> ${firstLowObjName}List){
+    	   if (CollectionUtil.isNotEmpty(${firstLowObjName}List)) {
+            for (${ObjName}Entity ${firstLowObjName} : ${firstLowObjName}List) {
+                Map<String, Object> map = this.get${ObjName}ByCode(${firstLowObjName}.getCode());
+                if (CollectionUtil.isNotEmpty(map)) {
+                    ${firstLowObjName}.setId((Integer) map.get("id"));
+                    commonService.dynamicMerge(${firstLowObjName});
+                } else {
+                    commonService.persist(${firstLowObjName}, String.class);
+                }
+
+            }
+        }
+    }
+    
+    public void delete${ObjName}ByCode(String code){
+    	Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", code);
+        commonService.execute("${lowerCaseObjName}.del${ObjName}ByCode", map);
+    }
+    
+    public Map<String, Object> get${ObjName}ByCode(String code){
+   	 Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code", code);
+    	 return commonService.queryForMap("${lowerCaseObjName}.get${ObjName}ByCode", map);
+    }
+    
+				
+}

@@ -1,0 +1,16 @@
+package ${packagePath}.web.${lowerCaseObjName}.form;
+
+import java.util.List;
+
+import ${packagePath}.base.vo.BaseVO;
+import ${packagePath}.model.${ObjName};
+import ${packagePath}.base.form.BaseForm;
+
+public class ${ObjName}Form extends BaseForm{
+	 #foreach (${element} in ${configBasicExtendInfoList})
+	 
+	 
+	 #end
+	 
+
+}

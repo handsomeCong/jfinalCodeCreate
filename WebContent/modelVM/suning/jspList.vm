@@ -1,0 +1,95 @@
+<script type="text/javascript">
+    
+    $(document).ready(function(){
+        initEditList()
+    });
+    
+    //初始化列表编辑效果
+    function initEditList(){
+        //双击列表，变换文本框  
+        $(".has-of-body tr").not(":first").each(function(){
+            $(this).find("td:gt(1)").dblclick(function(e){
+                //判断td的内容是数据还是文本框，若是文本框，则不做处理  add by gaolei
+                if($(this).children().is("input")){
+                    return;
+                }
+                e.preventDefault();
+                var val = $(this).text();
+                var wid = $(this).width()-20;
+                var html = "";
+                html = "<input class='normal-input focus-input' value='"+val+ "'/>";
+                $(this).empty() ;
+                $(this).html(html) ;
+                $(".focus-input").parent().width(wid+20) ;
+                $(".focus-input").width(wid).focus();
+                $(".normal-select").parent().width(wid+20) ;
+                $(".normal-select").width(wid).focus();
+                $(this).parent().find("input:checkbox").prop("checked",true);
+            });
+            
+        });
+        
+        $("form").on("blur",".focus-input",function(){
+            $(this).parent().width("auto").html($(this).val());
+        });
+        
+        $(".has-of-body tr").on("blur",".normal-select",function(){
+            var _val = $.trim($(this).val());
+            $(this).parent().width("auto").text(_val);
+        });
+        
+        var _all_chk = $(".has-of-body").find("tr th input:checkbox");
+        _all_chk.click(function () {
+            var _other_chks = $(this).parent().parent().parent().siblings().find("input:checkbox:first");
+            if($(this).prop("checked")){
+                _other_chks.prop("checked",true);
+            }else{
+                _other_chks.prop("checked",false);
+            }
+        });
+        
+        $(".has-of-body tr").hover(function(){
+            $(this).addClass("bg-gray");
+        },function(){
+            $(this).removeClass("bg-gray");
+        });
+    }
+    
+</script>
+<div class="table-operation-btn clearfix">
+    <div class="left-btn fl">
+        <a href="javascript:void(0);" onClick="add();" class="normal-btn">新增</a>
+                    <a href="javascript:void(0);" onClick="del();" class="normal-btn">删除</a>
+                    <a href="javascript:void(0);" onClick="save();" class="normal-btn">保存</a>
+                    <a href="javascript:void(0);" onClick="getList();" class="red-btn fl">查询</a>
+    </div>
+</div>
+<div class="has-of-wrap">
+    <div style="height:370px" class="has-of-body">
+        <table>
+             <tr id="${firstLowObjName}Tr">
+                            <th width="5%"><label><input type="checkbox"/>全选</label></th>
+                            #foreach (${element} in ${configBasicExtendInfoList})
+								#if(${element.IS_TALBE_DISPLAY}=='true')
+									<th>${element.FIELD_DESCRIBE}</th>
+								#end
+							 #end
+          	</tr>
+                        <#list ${firstLowObjName}List as item>
+                        <tr>
+                            <td><label><input type="checkbox"/>${ item_index + 1}</label></td>
+                            #foreach (${element} in ${configBasicExtendInfoList})
+						 #if(${element.IS_TALBE_DISPLAY}=='true')
+						<td>
+							${ item.${element.FIRSTLOW_ENGLISH_NAME}}
+						</td>	
+						 #end
+						#end
+ 				   </tr> 
+                        </tr>
+                        </#list>
+        </table>
+    </div>
+</div>
+ #set ($q='#include')
+    <$q "/common/pager.ftl">

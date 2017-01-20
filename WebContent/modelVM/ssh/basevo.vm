@@ -1,0 +1,16 @@
+package ${packagePath}.web.${lowerCaseObjName}.vo;
+
+import ${packagePath}.base.vo.BasePageVO;
+
+public class ${ObjName}Vo extends BasePageVO {
+	private static final long serialVersionUID = 1L;
+	private java.lang.String name;
+
+	public java.lang.String getName() {
+		return name;
+	}
+	public void setName(java.lang.String name) {
+		this.name = name;
+	}
+
+}

@@ -1,0 +1,16 @@
+package ${packagePath}.web.${lowerCaseObjName}.vo;
+
+public class ColumnsVo {
+	private int totalRows;
+
+	public int getTotalRows() {
+		return totalRows;
+	}
+
+	public void setTotalRows(int totalRows) {
+		this.totalRows = totalRows;
+	}
+
+
+	
+}

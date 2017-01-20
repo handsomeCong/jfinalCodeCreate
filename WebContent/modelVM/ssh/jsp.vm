@@ -1,0 +1,92 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="/WEB-INF/pages/c.tld"%>
+<%@ taglib prefix="fmt" uri="/WEB-INF/pages/fmt.tld"%>
+<%@ taglib uri="http://www.tag.mytag.com" prefix="page"  %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>title</title>
+<link href="/assets/css/dpl-min.css" rel="stylesheet">
+<link href="/assets/css/bui-min.css" rel="stylesheet">
+<link href="/assets/css/globle.css" rel="stylesheet">
+<link href="/assets/css/style.css" rel="stylesheet">
+<script src="${ ctx}/js/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script src="${ ctx}/js/common.js" type="text/javascript"></script>
+</head>
+<body>
+
+<ul class="breadcrumb">
+  <li><a href="#">首页</a> <span class="divider">/</span></li>
+  <li><a href="#">${ObjCN}</a> <span class="divider">/</span></li>
+  <li class="active">列表</li>
+</ul>
+<ul class="nav-tabs p">
+  <li class="active"><a href="#">${ObjCN}</a></li>
+  
+</ul>
+ 
+
+<table cellspacing="0" style="padding-top:8px;" class="table table-bordered">
+          <thead>
+            <tr><th colspan="6">
+            <ul class="toolbar">
+              <li><label class="checkbox"><input type="checkbox" name="checkAll"><a >全选</a></label></li>
+              <li><a class="button button-danger button-mini table_add" ><i class="icon-white icon-plus"></i> 添加</a></li>
+              <li><button class="button button-success button-mini table_delete">删除</button></li>
+              <li><button class="button button-inverse button-mini table_refresh">刷新</button></li>
+            </ul>
+            </th></tr>
+            <tr>
+              <th width="15"></th>
+			  <th>操作</th>
+				#foreach (${element} in ${configBasicExtendInfoList})
+					#if(${element.IS_TALBE_DISPLAY}=='true')
+					   <th>${element.FIELD_DESCRIBE}</th>
+					#end
+				#end
+            </tr>
+          </thead>
+          <tbody>
+            <c:forEach items="${ list}" var="item" >
+										 
+		       <tr>
+					<td><input type="checkbox" name="subBox" value="${ item.id}" /></td>
+					<td><button class="button button-success button-mini table_edit" value="${ item.id}">编辑</button></td>
+					#foreach (${element} in ${configBasicExtendInfoList})
+					 #if(${element.IS_TALBE_DISPLAY}=='true')
+					<td>
+						#if(${element.CONTROL_TYPE}=='date')
+							<fmt:formatDate value="${ item.${element.FIELD_ENGLISH_NAME}}" var="${element.FIELD_ENGLISH_NAME}" pattern="yyyy-MM-dd"/>	
+							${ item.${element.FIRSTLOW_ENGLISH_NAME}}
+						#else
+							${ item.${element.FIRSTLOW_ENGLISH_NAME}}
+						#end
+					</td>	
+					 #end
+					#end
+			  
+			   </tr>
+			 
+         </c:forEach>
+          </tbody>
+        </table>
+        <div>
+			<ul class="toolbar pull-left">
+			  <li><label class="checkbox"><input type="checkbox" name="checkAll"><a >全选</a></label></li>
+              <li><a class="button button-danger button-mini table_add" ><i class="icon-white icon-trash table_add"></i>添加</a></li>
+              <li><a class="button button-success button-mini table_delete"><i class="icon-white icon-trash"></i>删除</a></li>
+              <li><button class="button button-inverse button-mini table_refresh">刷新</button></li>
+            </ul>
+				 <ul class="pagination pull-right">
+					<page:page href="/${lowerCaseObjName}/query.htm" data="form" />
+				 </ul>
+        </div>
+</body>
+
+<script language="javascript">
+$(document).ready(function(){
+	table_init("${ ctx}/${lowerCaseObjName}","${ ctx}/${lowerCaseObjName}");
+});
+</script>
+</html>

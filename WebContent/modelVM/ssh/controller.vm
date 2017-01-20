@@ -1,0 +1,144 @@
+package ${packagePath}.web.${lowerCaseObjName}.controller;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import ${packagePath}.base.controller.BaseMultiAction;
+import ${packagePath}.model.${ObjName};
+import ${packagePath}.system.Configurature;
+import ${packagePath}.system.ServerConfig;
+import ${packagePath}.utils.Convert;
+import ${packagePath}.utils.IDGenerator;
+import ${packagePath}.web.${lowerCaseObjName}.form.${ObjName}Form;
+import ${packagePath}.web.${lowerCaseObjName}.form.${ObjName}SearchForm;
+import ${packagePath}.web.${lowerCaseObjName}.service.${ObjName}Service;
+import ${packagePath}.web.${lowerCaseObjName}.vo.ColumnsVo;
+import ${packagePath}.web.${lowerCaseObjName}.vo.${ObjName}Vo;
+
+public class ${ObjName}ListController extends BaseMultiAction {
+
+	private ${ObjName}Service ${firstLowObjName}Service;
+
+	public ModelAndView query(HttpServletRequest req, HttpServletResponse resp, ${ObjName}SearchForm form) {
+		System.out.println("query");
+		String sql = "select * from ${tableName}";
+		String sqlRows = "select count(*) as total_rows from ${tableName}";
+		String keyword = form.getKeyword();
+		if(!Convert.isEmpty(keyword)) {
+			sql += " where name like '" + keyword + "%'";
+			sqlRows += " where name like '" + keyword + "%'";
+		}
+		if(form.getSearchReset().equals("1")) {
+			form.setPageNo(1);
+		}
+		List<ColumnsVo> allList = (List<ColumnsVo>)${firstLowObjName}Service.select(sqlRows, new Class[]{ColumnsVo.class});					
+		List<${ObjName}> list = (List<${ObjName}>)${firstLowObjName}Service.selectByPartition(sql, form.getStart(), form.getPageSize(), new Class[]{${ObjName}.class});
+		form.setTotalRows(allList.get(0).getTotalRows());
+		ModelAndView view = new ModelAndView("${lowerCaseObjName}/${lowerCaseObjName}_query");
+		view.addObject("list", list);
+		view.addObject("form", form);
+		return view;
+	}
+
+ 
+
+	public ${ObjName}Service get${ObjName}Service() {
+		return ${firstLowObjName}Service;
+	}
+
+
+
+	public void set${ObjName}Service(${ObjName}Service ${firstLowObjName}Service) {
+		this.${firstLowObjName}Service =${firstLowObjName}Service;
+	}
+
+
+
+	public ModelAndView search(HttpServletRequest req, HttpServletResponse resp, ${ObjName}SearchForm form) {
+		${ObjName}Vo vo = new ${ObjName}Vo();
+		vo.setName(Convert.toString(form.getKeyword()));
+		vo.setStart(form.getStart());
+		vo.setPageSize(form.getPageSize());
+		if(form.getSearchReset().equals("1")) {
+			form.setPageNo(1);
+			vo.setStart(0);
+		}
+		List<${ObjName}> list = ${firstLowObjName}Service.search(vo, vo.getName(), "name", form.getSortColumn(), form.getSortType());
+		if (list.size() == 0) {
+			list = ${firstLowObjName}Service.search(vo, vo.getName(), "name", form.getSortColumn(), form.getSortType());
+		}
+		form.setTotalRows(vo.getTotalRows());
+		ModelAndView view = new ModelAndView("${lowerCaseObjName}/${lowerCaseObjName}_manage");
+		view.addObject("list", list);
+		view.addObject("form", form);
+		return view;
+	}
+
+	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp, ${ObjName}SearchForm form) {
+		String keys=req.getParameter("keys");
+		for(String key:keys.split(",")){
+			${firstLowObjName}Service.delete(key);
+		}
+		return new ModelAndView(new RedirectView(ServerConfig.MANAGE_SERVER + "/${lowerCaseObjName}/query.htm"));
+	}
+
+	public ModelAndView save(HttpServletRequest req, HttpServletResponse res, ${ObjName}Form form) throws Exception {
+		${ObjName} model = new ${ObjName}();
+		System.out.println("save");
+		String id = null;
+		if (form.getId().equals("") || form.getId() == null) {
+			id = IDGenerator.newID();
+			model.setId(id);
+			form.setId(id);
+		} else {
+			id = form.getId();
+			model.setId(id);
+			${ObjName} temp = ${firstLowObjName}Service.findByPK(id);
+			
+		}
+		 
+		ModelAndView view = new ModelAndView("${lowerCaseObjName}/${lowerCaseObjName}_edit");
+		/**
+		String sql = "select * from ${tableName} where name = '" + form.getName() + "' and id != '" + model.getId() + "'";
+		List<${ObjName}> list = (List<${ObjName}>) ${firstLowObjName}Service.select(sql, new Class[] { ${ObjName}.class });
+		if (list.size() > 0 && !list.get(0).getId().equals(model.getId())) {
+			view.addObject("form", form);
+			view.addObject("msg", "not chongfu");
+			return view;
+		}
+		**/
+		BeanUtils.copyProperties(form, model);
+		${firstLowObjName}Service.save(model);
+		view.addObject("msg", "save success!");
+		view.addObject("form", form);
+		System.out.println("save success!");
+		//return view;
+		return new ModelAndView(new RedirectView(ServerConfig.MANAGE_SERVER + "/${lowerCaseObjName}/query.htm"));
+	}
+ 
+	
+	public ModelAndView edit(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		${ObjName}Form form = new ${ObjName}Form();
+		String key = req.getParameter("key");
+		if (key != null) {
+			${ObjName} temp = ${firstLowObjName}Service.findByPK(key);
+			BeanUtils.copyProperties(temp, form);
+		 
+		}
+		Hashtable<String, Object> output = new Hashtable<String, Object>();
+		output.put("form", form);
+		return new ModelAndView("${lowerCaseObjName}/${lowerCaseObjName}_edit", output);
+	}
+}
+;

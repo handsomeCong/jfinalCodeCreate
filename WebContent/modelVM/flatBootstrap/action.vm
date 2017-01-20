@@ -1,0 +1,78 @@
+package ${packagePath}.${lowerCaseObjName}.action;
+import platform.base.ext.BoxAction;
+import platform.base.util.PlatformTool;
+import ${packagePath}.${lowerCaseObjName}.model.${ObjName};
+import com.jfinal.plugin.activerecord.Page;
+import java.util.HashMap;
+import java.util.Map;
+public class ${ObjName}Action extends BoxAction {
+	public void index() {
+		#set ($q='"')
+		String searchSQL="";
+		String orderSQL="";
+			#set($count=0)	
+			#set($querySQL="")
+    		#foreach (${element} in ${configBasicExtendInfoList})
+    			 #if(${element.IS_SEARCH}=='true')
+				   String ${element.FIELD_ENGLISH_NAME}=getPara("${element.FIELD_ENGLISH_NAME}");
+				   if(${element.FIELD_ENGLISH_NAME}!=null){
+					 searchSQL=searchSQL+" and  ${element.FIELD_ENGLISH_NAME} LIKE '%$q+${element.FIELD_ENGLISH_NAME}+$q%'";
+					 setAttr("${element.FIELD_ENGLISH_NAME}",${element.FIELD_ENGLISH_NAME});
+				   }
+    				 #set($count=$count+1)
+					
+    			 #end
+    		 #end	
+		Page pageList = ${ObjName}.dao.getPageList(searchSQL,orderSQL,getPageBean());
+		setAttr("pageList", pageList);
+		render("/WEB-INF/jsp/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}.jsp");
+	}	
+	
+	public void add() {
+		render("/WEB-INF/jsp/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}_add.jsp");
+	}
+	
+	public void saveAdd() {
+		${ObjName} model = getModel(${ObjName}.class);
+		model.set("ID", PlatformTool.generateUUID());
+		String id = model.get("ID");
+		model.save();
+		setAttr("id", id);
+		redirect("/${lowerCaseObjName}");
+	}
+	
+	public void modify() {
+		String id = getPara();
+		${ObjName} model = ${ObjName}.dao.findById(id);
+		setAttr("model", model);
+		render("/WEB-INF/jsp/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}_modify.jsp");
+	}
+	
+	public void saveModify() {
+		${ObjName} model = getModel(${ObjName}.class);
+		String id = model.get("ID");
+		model.update();
+		setAttr("id", id);
+		redirect("/${lowerCaseObjName}");
+	}
+	
+	public void view(){
+		String id = getPara();
+		${ObjName} model = ${ObjName}.dao.findById(id);
+		setAttr("model", model);
+		render("/WEB-INF/jsp/${basePackagePath}/${lowerCaseObjName}/${lowerCaseObjName}_view.jsp");
+	
+	}
+	
+	 
+	public void delete() {
+		boolean b = ${ObjName}.dao.delete(this.getDelIds());
+		HashMap jsonMap=new HashMap();
+	    if (b) {
+			jsonMap.put("msg","信息删除成功！");
+		} else {
+			jsonMap.put("msg","信息删除失败！请联系管理员！");
+		}
+		renderJson(jsonMap);
+	}
+}
