@@ -10,6 +10,8 @@ http://localhost:8080/jfinalCodeCreate/dbconfiginfo
 
 可以将config_basic_info config_sub_info db_config_info 这3张表清空
 
+fdsfsd
+
 
 
 
